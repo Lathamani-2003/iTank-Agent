@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Professional Diagram Editor</title>
+  <style>
+    *{box-sizing:border-box} html,body{margin:0;padding:0;width:100%;min-height:1px;overflow:hidden;background:transparent;font-family:Inter,Segoe UI,Arial,sans-serif;color:#0f172a}
+    #root{width:100%;min-height:1px;outline:none;background:#f8fafc}
+    .toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 9px;background:#fff;border:1px solid #dbe4ef;border-radius:8px 8px 0 0;line-height:1.2}
+    .toolbar button{height:30px;min-width:32px;padding:0 9px;border:1px solid #d4dce8;border-radius:6px;background:#fff;color:#24364b;cursor:pointer;font-size:12px}
+    .toolbar button:hover{background:#f1f5f9}.toolbar .save-button{background:#1473e6;color:#fff;border-color:#1473e6;font-weight:600}.toolbar .save-button:hover{background:#0f5fc2}.toolbar button.active{background:#e8f1ff;border-color:#3b82f6;color:#174ea6}.toolbar button:disabled{opacity:.45;cursor:default}
+    .divider{width:1px;height:22px;background:#dbe4ef;margin:0 2px}.zoom-label{font-size:12px;min-width:46px;text-align:center;color:#64748b}
+    .hint{margin-left:auto;font-size:11px;color:#718096;white-space:nowrap}
+    .stage-wrap{position:relative;width:100%;height:660px;overflow:hidden;background:#eef2f7;border:1px solid #dbe4ef;border-top:0;border-radius:0 0 8px 8px;line-height:0;user-select:none}
+    #editorSvg{display:block;width:100%;height:100%;background:#f5f7fa;touch-action:none;cursor:default}
+    .grid-line{stroke:#d7dee8;stroke-width:.012;pointer-events:none}.normal-underlay,.selected-underlay{fill:none;stroke:#fff;stroke-width:.15;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+    .normal-line,.selected-line{fill:none;stroke-width:.052;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.selected-line{stroke:#1473e6!important}
+    .hit-line{fill:none;stroke:rgba(0,0,0,0);stroke-width:.34;cursor:pointer;pointer-events:stroke}.component-image{cursor:move;pointer-events:all}
+    .component-selection{fill:none;stroke:#2563eb;stroke-width:.024;stroke-dasharray:.10 .06;pointer-events:none}.resize-handle{fill:#fff;stroke:#2563eb;stroke-width:.025;pointer-events:all}
+    .resize-nw,.resize-se{cursor:nwse-resize}.resize-ne,.resize-sw{cursor:nesw-resize}.waypoint{fill:#fff;stroke:#2563eb;stroke-width:.027;cursor:move;pointer-events:all}.endpoint{fill:#fff;stroke:#16a34a;stroke-width:.034;cursor:crosshair;pointer-events:all}
+    .virtual-point{fill:#fff;stroke:#64748b;stroke-width:.022;cursor:copy;pointer-events:all;opacity:.8}.port-handle{fill:#fff;stroke:#16a34a;stroke-width:.032;cursor:crosshair;pointer-events:all}.marquee{fill:rgba(37,99,235,.08);stroke:#2563eb;stroke-width:.018;stroke-dasharray:.09 .05;pointer-events:none}.connect-preview{fill:none;stroke:#1473e6;stroke-width:.072;stroke-dasharray:.09 .05;pointer-events:none}
+    .context{position:absolute;z-index:30;min-width:150px;background:#fff;border:1px solid #cbd5e1;border-radius:7px;box-shadow:0 8px 24px rgba(15,23,42,.16);padding:4px;line-height:1.2}.context button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:7px 9px;border-radius:5px;font-size:12px;cursor:pointer;color:#1e293b}.context button:hover{background:#f1f5f9}.context .danger{color:#b42318}
+    #standalone{padding:14px;color:#475569;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:#fff}
+  </style>
+</head>
+<body>
+<div id="root" tabindex="0"><div id="standalone">Professional diagram editor is ready. Open it through the Streamlit application.</div></div>
+<script src="./main.js?v=refined-connection-lines-20260831-1"></script>
+</body>
+</html>

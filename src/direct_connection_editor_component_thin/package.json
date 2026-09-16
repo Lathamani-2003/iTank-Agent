@@ -1,0 +1,11 @@
+{
+  "name": "rts-direct-connection-editor-routing",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build:routing": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

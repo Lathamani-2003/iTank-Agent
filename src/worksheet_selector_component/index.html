@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  html,body{margin:0;padding:0;background:transparent;overflow:hidden;font-family:Arial,sans-serif}
+  #root{width:100%;height:40px;display:flex;align-items:center}
+  .ws-row{display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:8px;width:100%;height:40px;align-items:center}
+  select,.rename-input,.add-btn{height:38px;box-sizing:border-box;border:1px solid #c9d8ea;border-radius:9px;background:#fff;color:#213a57;font-size:14px;outline:none}
+  select,.rename-input{width:100%;padding:0 34px 0 12px;font-weight:600}
+  select:focus,.rename-input:focus{border-color:#4d8fe8;box-shadow:0 0 0 2px rgba(77,143,232,.14)}
+  .add-btn{width:42px;padding:0;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;color:#1769d2;font-weight:500;cursor:pointer}
+  .add-btn:hover{background:#f3f8ff;border-color:#86afe4}
+  .rename-input{padding-right:12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="./main.js"></script>
+</body>
+</html>

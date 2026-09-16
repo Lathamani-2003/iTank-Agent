@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{
+  margin:0;padding:0;background:transparent;overflow:hidden;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+#root{width:138px;position:relative}
+.control{
+  width:138px;height:38px;border:1px solid #d7dce1;border-radius:6px;
+  background:#fff;display:flex;align-items:center;justify-content:space-between;
+  padding:0 10px;color:#262730;font-size:14px;cursor:pointer;user-select:none;
+}
+.control:hover{border-color:#b6bec8}
+.label{max-width:105px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arrow{font-size:10px;color:#5b6470;margin-left:7px}
+.menu{
+  width:138px;margin-top:4px;background:#fff;border:1px solid #d7dce1;
+  border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.14);overflow:hidden;
+}
+.option{
+  min-height:34px;padding:7px 10px;display:flex;align-items:center;
+  font-size:14px;color:#262730;cursor:pointer;user-select:none;
+}
+.option:hover,.option.selected{background:#f3f5f7}
+.rename-input{
+  width:100%;height:28px;border:1px solid #0a66e3;border-radius:4px;
+  padding:3px 6px;font:inherit;color:#262730;background:#fff;outline:none;
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const root = document.getElementById("root");
+let args = {worksheets:[], selected_id:null};
+let menuOpen = false;
+let renameId = null;
+let controlClickTimer = null;
+let optionClickTimer = null;
+
+function post(type,payload){
+  window.parent.postMessage(Object.assign({
+    isStreamlitMessage:true,
+    type:type
+  }, payload || {}), "*");
+}
+function ready(){ post("streamlit:componentReady",{apiVersion:1}); }
+function setHeight(h){ post("streamlit:setFrameHeight",{height:h}); }
+function setValue(value){
+  post("streamlit:setComponentValue",{value:value,dataType:"json"});
+}
+function uid(){
+  return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
+}
+function emit(type,id,extra){
+  setValue(Object.assign({
+    type:type,
+    worksheet_id:Number(id),
+    event_id:uid()
+  }, extra || {}));
+}
+function sheets(){ return Array.isArray(args.worksheets) ? args.worksheets : []; }
+function selected(){
+  return sheets().find(s=>Number(s.id)===Number(args.selected_id)) || sheets()[0] || null;
+}
+function startRename(id){
+  clearTimeout(controlClickTimer);
+  clearTimeout(optionClickTimer);
+
+  // Rename only in the first/current worksheet box.
+  // Never open or use a separate dropdown-row editor.
+  menuOpen = false;
+  renameId = Number(id);
+  render();
+}
+function commitRename(sheet,input){
+  const name=(input.value||"").trim();
+  const old=String(sheet.name||"");
+  renameId=null;
+  menuOpen=false;
+  if(name && name!==old){
+    emit("rename",sheet.id,{name:name});
+  }
+  render();
+}
+function render(){
+  root.innerHTML="";
+  const current=selected();
+
+  const control=document.createElement("div");
+  control.className="control";
+  control.title="Double-click worksheet name to edit";
+
+  if(current && renameId===Number(current.id)){
+    const input=document.createElement("input");
+    input.className="rename-input";
+    input.value=String(current.name||"");
+    input.addEventListener("click",e=>e.stopPropagation());
+    input.addEventListener("dblclick",e=>e.stopPropagation());
+    let done=false;
+    const commit=()=>{
+      if(done)return;
+      done=true;
+      commitRename(current,input);
+    };
+    input.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){e.preventDefault();commit();}
+      if(e.key==="Escape"){
+        e.preventDefault();done=true;renameId=null;menuOpen=false;render();
+      }
+    });
+    input.addEventListener("blur",commit);
+    control.appendChild(input);
+    setTimeout(()=>{input.focus();input.select();},0);
+  }else{
+    const label=document.createElement("span");
+    label.className="label";
+    label.textContent=current?String(current.name||"Worksheet"):"Worksheet";
+    const arrow=document.createElement("span");
+    arrow.className="arrow";
+    arrow.textContent=menuOpen?"▲":"▼";
+    control.append(label,arrow);
+
+    // The visible worksheet name itself is the rename target.
+    // A normal click on the name does nothing; double-click edits it inline.
+    label.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    label.addEventListener("dblclick",e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      clearTimeout(controlClickTimer);
+      if(current) startRename(current.id);
+    });
+
+    // Keep normal worksheet selection available only from the arrow.
+    // This prevents the selected worksheet name from opening a duplicate box.
+    arrow.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopPropagation();
+
+      if(sheets().length <= 1){
+        menuOpen=false;
+        renameId=null;
+        render();
+        return;
+      }
+
+      menuOpen=!menuOpen;
+      renameId=null;
+      render();
+    });
+  }
+
+  root.appendChild(control);
+
+  if(menuOpen && !(current && renameId===Number(current.id))){
+    const menu=document.createElement("div");
+    menu.className="menu";
+
+    sheets()
+      .filter(sheet=>Number(sheet.id)!==Number(args.selected_id))
+      .forEach(sheet=>{
+      const row=document.createElement("div");
+      row.className="option";
+
+      // Dropdown rows are selection-only. The current worksheet is intentionally
+      // not duplicated here; its name is edited directly in the first box above.
+      row.textContent=String(sheet.name||("Worksheet "+sheet.id));
+      row.addEventListener("click",e=>{
+        e.preventDefault();
+        clearTimeout(optionClickTimer);
+        optionClickTimer=setTimeout(()=>{
+          menuOpen=false;
+          renameId=null;
+          if(Number(sheet.id)!==Number(args.selected_id)){
+            emit("select",sheet.id);
+          }
+          render();
+        },220);
+      });
+
+      menu.appendChild(row);
+    });
+    root.appendChild(menu);
+  }
+
+  const otherSheetCount=sheets().filter(
+    sheet=>Number(sheet.id)!==Number(args.selected_id)
+  ).length;
+  const h=(menuOpen && otherSheetCount>0)
+    ? Math.min(44 + (otherSheetCount*34) + 8, 280)
+    : 40;
+  setHeight(h);
+}
+window.addEventListener("message",event=>{
+  const data=event.data||{};
+  if(data.type!=="streamlit:render") return;
+  args=data.args||args;
+  render();
+});
+ready();
+setHeight(40);
+</script>
+</body>
+</html>
