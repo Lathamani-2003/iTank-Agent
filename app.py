@@ -778,6 +778,50 @@ hr { border-color:#dbe8f7 !important; }
     background:linear-gradient(90deg,transparent 0%,#60a5fa 20%,#22d3ee 50%,#60a5fa 80%,transparent 100%);
 }
 
+
+/* Project slide counter/navigation only. Fixed in the requested bottom-right
+   workspace area without altering any existing footer or page controls. */
+.st-key-project_slide_navigation {
+    position:fixed !important;
+    right:20px !important;
+    bottom:42px !important;
+    z-index:999997 !important;
+    width:190px !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+.st-key-project_slide_navigation [data-testid="stHorizontalBlock"] {
+    align-items:center !important;
+    gap:6px !important;
+}
+.st-key-project_slide_navigation [data-testid="column"] {
+    padding:0 !important;
+}
+.st-key-project_slide_navigation .stButton {
+    margin:0 !important;
+    padding:0 !important;
+}
+.st-key-project_slide_navigation .stButton > button {
+    min-height:30px !important;
+    height:30px !important;
+    width:30px !important;
+    padding:0 !important;
+    border-radius:7px !important;
+    font-size:18px !important;
+    line-height:1 !important;
+}
+.st-key-project_slide_navigation .project-slide-counter {
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    white-space:nowrap;
+    color:#0a4f8f;
+    font-size:13px;
+    font-weight:700;
+    line-height:30px;
+}
+
 /* Space-efficiency only: preserve the same visual design while reducing page scroll. */
 /* Left panel vertical compaction only. Keep control design unchanged. */
 [data-testid="stVerticalBlock"] { gap: 0.22rem !important; }
@@ -2323,12 +2367,12 @@ div[data-testid="stHorizontalBlock"]:has(
    moves upward by the same amount and finishes correctly above the footer.
    ============================================================ */
 .premium-header {
-    transform: translateY(-32px) !important;
+    transform: translateY(-55px) !important;
 }
 
 @media (min-width: 769px) {
     .premium-header {
-        margin-bottom: -25px !important;
+        margin-bottom: -48px !important;
     }
 }
 
@@ -2343,7 +2387,7 @@ div[data-testid="stHorizontalBlock"]:has(
     [data-testid="stHorizontalBlock"]:has(.mobile-left-marker):has(.mobile-center-marker)
     > [data-testid="stColumn"]:last-child
     > [data-testid="stVerticalBlock"] {
-        margin-left: -10.2% !important;
+        margin-left: calc(-10.2% + 14px) !important;
         width: 110.2% !important;
         max-width: 110.2% !important;
         box-sizing: border-box !important;
@@ -2425,8 +2469,9 @@ div[data-testid="stHorizontalBlock"]:has(
     align-items: center !important;
     justify-content: center !important;
     line-height: 1 !important;
-    font-size: 20px !important;
-    font-weight: 800 !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    text-shadow: 0 1px 2px rgba(7,60,120,.20) !important;
     background: rgba(255,255,255,0.96) !important;
     box-shadow: 0 2px 8px rgba(7,60,120,.14) !important;
 }
@@ -2604,6 +2649,44 @@ div[data-testid="stHorizontalBlock"]:has(
 [class*="st-key-worksheet_page_prev_"] [data-testid^="stBaseButton"]:active,
 [class*="st-key-worksheet_page_next_"] [data-testid^="stBaseButton"]:active {
     transform: scale(0.96) !important;
+}
+
+/* Decorative polish for the navigation glyphs only.
+   Button size, position, background, state and click behavior remain unchanged. */
+[class*="st-key-worksheet_page_prev_"] button p,
+[class*="st-key-worksheet_page_next_"] button p,
+[class*="st-key-worksheet_page_prev_"] [data-testid^="stBaseButton"] p,
+[class*="st-key-worksheet_page_next_"] [data-testid^="stBaseButton"] p {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Arial Unicode MS", sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    color: #0b5f9f !important;
+    text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.96),
+        0 2px 4px rgba(4, 70, 122, 0.28) !important;
+    transform: scaleX(1.06) !important;
+    transform-origin: center center !important;
+    transition:
+        transform 160ms ease,
+        color 160ms ease,
+        text-shadow 160ms ease,
+        filter 160ms ease !important;
+}
+
+[class*="st-key-worksheet_page_prev_"] button:hover p,
+[class*="st-key-worksheet_page_next_"] button:hover p,
+[class*="st-key-worksheet_page_prev_"] [data-testid^="stBaseButton"]:hover p,
+[class*="st-key-worksheet_page_next_"] [data-testid^="stBaseButton"]:hover p {
+    color: #087dca !important;
+    transform: scaleX(1.12) scaleY(1.04) !important;
+    text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.98),
+        0 3px 6px rgba(4, 79, 137, 0.34) !important;
+    filter: brightness(1.05) !important;
 }
 
 
@@ -3629,6 +3712,59 @@ div[data-baseweb="popover"] {
     height: 12px !important;
 }
 
+/* Saved-project delete control only. */
+[class*="st-key-saved_project_delete_button_"] {
+    min-height: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+[class*="st-key-saved_project_delete_button_"] button,
+[class*="st-key-saved_project_delete_button_"] [data-testid^="stBaseButton"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 20px !important;
+    height: 20px !important;
+    max-height: 20px !important;
+    margin: 0 !important;
+    padding: 0 3px !important;
+    border: 1px solid #ffb9c1 !important;
+    border-radius: 4px !important;
+    background: #fff8f9 !important;
+    color: #ff4053 !important;
+    box-shadow: none !important;
+    font-size: 8px !important;
+    font-weight: 600 !important;
+    line-height: 18px !important;
+}
+[class*="st-key-saved_project_delete_button_"] button:disabled,
+[class*="st-key-saved_project_delete_button_"] [data-testid^="stBaseButton"]:disabled {
+    opacity: 1 !important;
+    cursor: default !important;
+    background: #fffcfc !important;
+    border-color: #ffe0e3 !important;
+}
+
+/* Saved-project delete icon appearance only. */
+[class*="st-key-saved_project_delete_button_"] button p,
+[class*="st-key-saved_project_delete_button_"] [data-testid^="stBaseButton"] p {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    color: #d93645 !important;
+    -webkit-text-fill-color: #d93645 !important;
+}
+
+[class*="st-key-saved_project_delete_button_"] button:disabled p,
+[class*="st-key-saved_project_delete_button_"] [data-testid^="stBaseButton"]:disabled p {
+    color: #a91f2f !important;
+    -webkit-text-fill-color: #a91f2f !important;
+}
+
 [class*="st-key-reference_left_topbar_"] {
     width: 80% !important;
     max-width: 80% !important;
@@ -3760,19 +3896,21 @@ div[data-baseweb="popover"] {
     justify-content: center !important;
     font-size: 10px !important;
     font-weight: 500 !important;
-    border-right: 1px solid #d6e0eb !important;
+    border-right: none !important;
 }
-.reference-component-code.sump { background: #e8f7ff !important; color: #0095d8 !important; }
-.reference-component-code.bore { background: #e8fff6 !important; color: #00a978 !important; }
-.reference-component-code.oht { background: #fff4d9 !important; color: #e78b00 !important; }
+.reference-component-code.sump { background: transparent !important; color: #0095d8 !important; }
+.reference-component-code.bore { background: transparent !important; color: #00a978 !important; }
+.reference-component-code.oht { background: transparent !important; color: #e78b00 !important; }
 .reference-component-name {
     justify-content: flex-start !important;
     padding: 0 7px !important;
-    color: #223348 !important;
+    color: #0095d8 !important;
     font-size: 10px !important;
     font-weight: 500 !important;
     white-space: nowrap !important;
 }
+.reference-component-name.bore { color: #00a978 !important; }
+.reference-component-name.oht { color: #e78b00 !important; }
 .reference-component-count {
     justify-content: center !important;
     background: #0784c1 !important;
@@ -3935,6 +4073,11 @@ div[data-baseweb="popover"] {
 [class*="st-key-reference_connection_section_"] [data-testid="stNumberInput"] > div,
 [class*="st-key-reference_connection_section_"] [data-testid="stNumberInput"] input {
     border-radius: 0 !important;
+}
+
+/* REQUIRED CONNECTIONS: spacing only between the first and second boxes. */
+[class*="st-key-reference_connection_section_"] [class*="st-key-connection_config_target_"] {
+    margin-top: 8px !important;
 }
 [class*="st-key-reference_connection_section_"] label,
 [class*="st-key-reference_connection_section_"] [data-testid="stWidgetLabel"] p {
@@ -4099,7 +4242,7 @@ div[class*="DataFrame"] table {
 }
 [class*="st-key-reference_component_row_"] [data-testid="stHorizontalBlock"] {
     display: grid !important;
-    grid-template-columns: 14% 39% 10% 12% 10% 15% !important;
+    grid-template-columns: 53% 10% 12% 10% 15% !important;
     column-gap: 0 !important;
     row-gap: 0 !important;
     align-items: center !important;
@@ -4636,6 +4779,87 @@ st.markdown(
 
 
 # =============================================================================
+# REQUIRED CONNECTION SELECTED-CONTENT VISIBILITY FIX ONLY
+# When selected connection pills wrap to multiple lines, let only this live
+# selector use its natural content height so the rows below are not covered.
+# The empty/unselected selector keeps its existing 32px dimensions and styling.
+# =============================================================================
+st.markdown(
+    """
+<style>
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"])
+[data-testid="stMultiSelect"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"])
+[data-testid="stMultiSelect"] > div,
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"])
+[data-baseweb="select"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"])
+[data-baseweb="select"] > div {
+    height: auto !important;
+    min-height: 32px !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# =============================================================================
+# REQUIRED CONNECTION WRAPPED-SELECTION LAYOUT HEIGHT FIX ONLY
+# When two or more selected connection pills wrap onto additional lines,
+# Streamlit can keep the keyed widget/element wrapper at the original 32px
+# layout height even though the BaseWeb selector is visually taller. That makes
+# the first active-connection row render underneath the selector. Reserve the
+# selector's real natural height only while selected pills are present so every
+# selected connection row remains fully visible. No width, colors, controls,
+# connection state, or behavior are changed.
+# =============================================================================
+st.markdown(
+    """
+<style>
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]),
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]) > div,
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]) [data-testid="stElementContainer"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]) [data-testid="stMultiSelect"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]) [data-testid="stMultiSelect"] > div,
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]) [data-baseweb="select"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"]) [data-baseweb="select"] > div {
+    height: auto !important;
+    min-height: 32px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}
+
+/* Allow the existing selected-pill contents to wrap naturally inside the
+   same selector so the layout engine reserves their complete visible height. */
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"]:has([data-baseweb="tag"])
+[data-baseweb="select"] > div {
+    flex-wrap: wrap !important;
+    align-content: center !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# =============================================================================
 # REQUIRED CONNECTION BOXES - SPACING ONLY V3
 # The keyed first selector is itself Streamlit's live layout element in this
 # build. Add space to that wrapper, not to the visible BaseWeb control.
@@ -4651,6 +4875,82 @@ st.markdown(
 [class*="st-key-required_connection_compact_"] {
     padding-bottom: 10px !important;
     box-sizing: content-box !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# =============================================================================
+# REQUIRED CONNECTIONS FIRST-BOX ALIGNMENT ONLY
+# Aligns the already-existing selected pills and active connection rows without
+# changing their colors, dimensions, controls, state, callbacks or behavior.
+# =============================================================================
+st.markdown(
+    """
+<style>
+/* Keep the first Required Connections selector on the same horizontal edges
+   as the active rows beneath it. */
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"] {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-bottom: 4px !important;
+}
+
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"] [data-testid="stMultiSelect"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"] [data-baseweb="select"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-required_connection_compact_"] [data-baseweb="select"] > div {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Use the same content inset for every visible active connection row so its
+   text aligns with the selected pill contents above. */
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"] {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+}
+
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"]
+[data-testid="stHorizontalBlock"] {
+    width: 100% !important;
+    margin: 0 !important;
+    gap: 0 !important;
+}
+
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"]
+.reference-active-connection-label {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+}
+
+/* Keep the existing remove control centered in its current cell. */
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"]
+[data-testid="stButton"],
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"] button,
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"]
+[data-testid^="stBaseButton"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 </style>
     """,
@@ -5224,6 +5524,15 @@ components.html(
       .includes('Select connection or control option...');
   }
 
+  function isSavedWorksheetPptSelect(targetOrSelect) {
+    if (!targetOrSelect || targetOrSelect.nodeType !== 1) return false;
+    return Boolean(
+      targetOrSelect.closest?.(
+        '[class*="st-key-saved_worksheet_ppt_selector_"]'
+      )
+    );
+  }
+
   function isWelcomeNameInput(target) {
     if (!target || target.nodeType !== 1) return false;
 
@@ -5248,6 +5557,15 @@ components.html(
   doc.addEventListener("pointerdown", (event) => {
     const target = event.target;
     if (!target || target.nodeType !== 1) return;
+
+    // Saved worksheet/PPT selector: keep its existing load/restore behavior,
+    // but never show the Worksheet loading overlay for this dropdown.
+    if (isSavedWorksheetPptSelect(target)) {
+      state.selectArmedUntil = 0;
+      state.connectionConfigAwaitingChoice = false;
+      hideOverlay();
+      return;
+    }
 
     // 2A second dropdown: opening/touching the box is never a processing
     // action. Arm the following portal option click, but keep the worksheet
@@ -5291,6 +5609,14 @@ components.html(
   doc.addEventListener("click", (event) => {
     const target = event.target;
     if (!target || target.nodeType !== 1) return;
+
+    // Saved worksheet/PPT selector: suppress visual loading feedback only.
+    if (isSavedWorksheetPptSelect(target)) {
+      state.selectArmedUntil = 0;
+      state.connectionConfigAwaitingChoice = false;
+      hideOverlay();
+      return;
+    }
 
     // Second 2A box: a normal click is only opening/focusing the dropdown.
     // Never show the worksheet loader here. The actual component/option click
@@ -5340,6 +5666,13 @@ components.html(
   doc.addEventListener("change", (event) => {
     const target = event.target;
     if (target && target.nodeType === 1 && isLeftControlInteraction(target)) {
+      // Saved worksheet/PPT selection must stay visually silent while the
+      // existing restore/load logic continues unchanged.
+      if (isSavedWorksheetPptSelect(target)) {
+        hideOverlay();
+        return;
+      }
+
       // The Welcome Page name is handled exclusively by the Enter listener
       // above so blur/change does not produce a false worksheet loading state.
       if (isWelcomeNameInput(target)) {
@@ -5385,6 +5718,159 @@ components.html(
     ensureOverlay();
     settleOverlay();
   }
+})();
+</script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# Saved-PPT name visibility only.
+# Keep the compact PPT selector itself unchanged; when its BaseWeb menu opens in
+# a portal, expand only that temporary option list enough to show each complete
+# saved filename instead of clipping it.
+components.html(
+    """
+<script>
+(() => {
+  let parentWindow;
+  let doc;
+  try {
+    parentWindow = window.parent;
+    doc = parentWindow.document;
+  } catch (_) {
+    return;
+  }
+
+  const GLOBAL_KEY = "__rtsSavedPptFullNameVisibility";
+  const previous = parentWindow[GLOBAL_KEY];
+  if (previous && typeof previous.cleanup === "function") {
+    try { previous.cleanup(); } catch (_) {}
+  }
+
+  const controller = new parentWindow.AbortController();
+  const signal = controller.signal;
+  const state = {
+    activeUntil: 0,
+    triggerWidth: 0,
+    observer: null,
+    cleanup: null,
+  };
+  parentWindow[GLOBAL_KEY] = state;
+
+  function savedSelector(target) {
+    if (!target || target.nodeType !== 1) return null;
+    return target.closest?.(
+      '[class*="st-key-saved_worksheet_ppt_selector_"]'
+    ) || null;
+  }
+
+  function visibleListboxes() {
+    return Array.from(doc.querySelectorAll('[role="listbox"]')).filter((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+  }
+
+  function measureRequiredWidth(options) {
+    let required = Math.max(0, Number(state.triggerWidth) || 0);
+    if (!options.length) return required;
+
+    const canvas = doc.createElement("canvas");
+    const context = canvas.getContext("2d");
+    const sampleStyle = parentWindow.getComputedStyle(options[0]);
+    if (context) {
+      context.font = [
+        sampleStyle.fontStyle,
+        sampleStyle.fontWeight,
+        sampleStyle.fontSize,
+        sampleStyle.fontFamily,
+      ].filter(Boolean).join(" ");
+
+      for (const option of options) {
+        const label = String(option.textContent || "").trim();
+        required = Math.max(required, context.measureText(label).width + 52);
+      }
+    }
+
+    const viewportLimit = Math.max(
+      Number(state.triggerWidth) || 0,
+      doc.documentElement.clientWidth - 28
+    );
+    return Math.ceil(Math.min(required, viewportLimit));
+  }
+
+  function revealFullSavedNames() {
+    if (Date.now() > state.activeUntil) return;
+
+    const listboxes = visibleListboxes();
+    if (!listboxes.length) return;
+
+    // The saved-PPT selector has just been opened, so its portal list is the
+    // most recently visible BaseWeb listbox.
+    const listbox = listboxes[listboxes.length - 1];
+    const options = Array.from(listbox.querySelectorAll('[role="option"]'));
+    if (!options.length) return;
+
+    const requiredWidth = measureRequiredWidth(options);
+    if (!requiredWidth) return;
+
+    listbox.style.setProperty("width", `${requiredWidth}px`, "important");
+    listbox.style.setProperty("min-width", `${requiredWidth}px`, "important");
+    listbox.style.setProperty("max-width", "none", "important");
+
+    const popover = listbox.closest('[data-baseweb="popover"]');
+    const widthTargets = [listbox.parentElement, popover].filter(Boolean);
+    for (const node of widthTargets) {
+      node.style.setProperty("width", `${requiredWidth}px`, "important");
+      node.style.setProperty("min-width", `${requiredWidth}px`, "important");
+      node.style.setProperty("max-width", "none", "important");
+    }
+
+    // Preserve the existing option appearance; change only clipping behavior.
+    for (const option of options) {
+      option.style.setProperty("white-space", "nowrap", "important");
+      option.style.setProperty("overflow", "visible", "important");
+      option.style.setProperty("text-overflow", "clip", "important");
+      for (const child of option.querySelectorAll("*")) {
+        child.style.setProperty("white-space", "nowrap", "important");
+        child.style.setProperty("overflow", "visible", "important");
+        child.style.setProperty("text-overflow", "clip", "important");
+      }
+    }
+  }
+
+  function armSavedMenu(target) {
+    const selector = savedSelector(target);
+    if (!selector) return false;
+
+    state.triggerWidth = selector.getBoundingClientRect().width;
+    state.activeUntil = Date.now() + 2500;
+    parentWindow.setTimeout(revealFullSavedNames, 0);
+    parentWindow.setTimeout(revealFullSavedNames, 40);
+    parentWindow.setTimeout(revealFullSavedNames, 120);
+    return true;
+  }
+
+  doc.addEventListener("pointerdown", (event) => {
+    armSavedMenu(event.target);
+  }, { capture: true, signal });
+
+  state.observer = new parentWindow.MutationObserver(() => {
+    if (Date.now() <= state.activeUntil) {
+      revealFullSavedNames();
+    }
+  });
+  state.observer.observe(doc.documentElement, {
+    subtree: true,
+    childList: true,
+  });
+
+  state.cleanup = () => {
+    try { controller.abort(); } catch (_) {}
+    try { state.observer && state.observer.disconnect(); } catch (_) {}
+  };
 })();
 </script>
     """,
@@ -5774,6 +6260,8 @@ def _new_worksheet(worksheet_id: int, number: int) -> dict:
 
 def ensure_worksheet_state() -> None:
     """Initialize the multi-worksheet container with the existing first worksheet."""
+    _apply_pending_saved_project_restore_if_needed()
+
     # Finish deletion cleanup before any worksheet-specific widgets are created in
     # this rerun. This removes stale uploader/editor/rename widget state belonging
     # to worksheets that were deleted in the previous run.
@@ -5859,6 +6347,12 @@ def ensure_worksheet_state() -> None:
 
     if st.session_state.get("worksheet_selector") not in valid_ids:
         st.session_state["worksheet_selector"] = st.session_state["active_worksheet_id"]
+
+    # Apply a page requested by the existing ❮ / ❯ controls only after any
+    # pending saved-project restore and worksheet-selector synchronization have
+    # completed. This keeps the requested saved-project page authoritative for
+    # this rerun without changing normal worksheet/dropdown behavior.
+    _apply_pending_worksheet_page_navigation_if_needed(valid_ids)
 
 
 def get_active_worksheet() -> dict:
@@ -5955,6 +6449,58 @@ def rename_worksheet(worksheet_id: int, new_name: str) -> None:
 
 
 _WORKSHEET_PAGE_FLOW_KEY = "_worksheet_price_page_flow"
+_PENDING_WORKSHEET_PAGE_NAVIGATION_KEY = "_pending_worksheet_page_navigation"
+
+
+def _apply_pending_worksheet_page_navigation_if_needed(
+    valid_worksheet_ids: list[int] | tuple[int, ...],
+) -> None:
+    """Apply one requested ❮ / ❯ page after saved-project state is restored."""
+    target_token = str(
+        st.session_state.pop(
+            _PENDING_WORKSHEET_PAGE_NAVIGATION_KEY,
+            "",
+        )
+        or ""
+    ).strip().lower()
+    if not target_token:
+        return
+
+    page_type, worksheet_id = _parse_worksheet_page_flow_token(
+        target_token
+    )
+
+    if page_type == "welcome":
+        st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = "welcome"
+        st.session_state["_worksheet_page_flow_navigation_target"] = "welcome"
+        return
+
+    normalized_valid_ids = {
+        int(value)
+        for value in list(valid_worksheet_ids or [])
+    }
+    if (
+        page_type not in {"worksheet", "price"}
+        or worksheet_id is None
+        or int(worksheet_id) not in normalized_valid_ids
+    ):
+        return
+
+    worksheet_id = int(worksheet_id)
+    normalized_target = _worksheet_page_flow_token(
+        page_type,
+        worksheet_id,
+    )
+    st.session_state["active_worksheet_id"] = worksheet_id
+    st.session_state["worksheet_selector"] = worksheet_id
+    st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = normalized_target
+
+    # Keep the existing active-sheet/page synchronization from coercing this
+    # deliberate navigation back to the worksheet page during the same rerun.
+    st.session_state["_worksheet_page_flow_last_active_id"] = worksheet_id
+    st.session_state["_worksheet_page_flow_navigation_target"] = (
+        normalized_target
+    )
 
 
 def _worksheet_page_flow_token(
@@ -6047,19 +6593,43 @@ def _navigate_worksheet_page_flow(target_token: str) -> None:
     """Navigate one page without changing any existing worksheet behavior."""
     persist_active_worksheet_state()
 
+    target_token = str(target_token or "").strip().lower()
     page_type, worksheet_id = _parse_worksheet_page_flow_token(
         target_token
     )
-    st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = str(target_token)
+    st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = target_token
+
+    # Stage the requested page as well as setting it immediately. On the next
+    # Streamlit rerun ensure_worksheet_state() reapplies this target *after* any
+    # saved-project restore/selector synchronization, preventing the restored
+    # project from snapping back to the worksheet that was initially opened.
+    st.session_state[_PENDING_WORKSHEET_PAGE_NAVIGATION_KEY] = target_token
+    st.session_state["_worksheet_page_flow_navigation_target"] = (
+        target_token
+    )
 
     if (
         page_type in {"worksheet", "price"}
         and worksheet_id is not None
     ):
         st.session_state["active_worksheet_id"] = int(worksheet_id)
-        # Apply the selector change at the start of the rerun, exactly like the
-        # existing add/delete worksheet flow.
+        # Keep the existing selector synchronization path unchanged.
         st.session_state["_pending_worksheet_selector"] = int(worksheet_id)
+
+    # Keep the arrow target alive through one possible delayed worksheet-dropdown
+    # event after a saved project is reopened. Without this one-shot guard, that
+    # frontend event can undo the first arrow click and make a second click appear
+    # necessary. The guard is consumed immediately when that matching event arrives.
+    try:
+        st.session_state["_worksheet_page_flow_navigation_selector_id"] = int(
+            st.session_state.get("active_worksheet_id")
+        )
+    except (TypeError, ValueError):
+        st.session_state.pop(
+            "_worksheet_page_flow_navigation_selector_id",
+            None,
+        )
+    st.session_state["_worksheet_page_flow_navigation_guard_runs"] = 2
 
 
 def _price_components_for_worksheet(worksheet_id: int) -> list[str]:
@@ -11135,8 +11705,55 @@ def _saved_worksheet_ppt_sidecar_path(ppt_path: Path) -> Path:
     )
 
 
+def _saved_complete_project_ppt_safe_stem() -> str:
+    """Return one stable filename stem for the complete current project."""
+    project_name = str(
+        st.session_state.get("welcome_page_display_name", "") or ""
+    ).strip()
+    cleaned_name = re.sub(
+        r"[^A-Za-z0-9._ -]+",
+        "_",
+        project_name,
+    )
+    cleaned_name = re.sub(r"\s+", "_", cleaned_name).strip(" ._")
+    if not cleaned_name:
+        cleaned_name = "Complete_Project"
+    return f"project_{cleaned_name}"[:120]
+
+
+def _saved_ppt_is_complete_project(ppt_path: Path) -> bool:
+    """Return True only for a valid complete-project library record."""
+    state_path = _saved_worksheet_ppt_sidecar_path(ppt_path)
+    if not ppt_path.is_file() or not state_path.is_file():
+        return False
+
+    try:
+        with state_path.open("rb") as state_file:
+            payload = pickle.load(state_file)
+    except Exception:
+        return False
+
+    if not isinstance(payload, dict):
+        return False
+    if str(payload.get("kind", "") or "") != "complete_project":
+        return False
+
+    project_snapshot = payload.get("project")
+    if not isinstance(project_snapshot, dict):
+        return False
+
+    saved_worksheets = project_snapshot.get("worksheets")
+    saved_project_pages = project_snapshot.get("project_pages")
+    if not isinstance(saved_worksheets, list) or not saved_worksheets:
+        return False
+    if not isinstance(saved_project_pages, list):
+        return False
+
+    return len(saved_project_pages) == 1 + (2 * len(saved_worksheets))
+
+
 def _saved_worksheet_ppt_files() -> list[Path]:
-    """List only app-saved worksheet PPT files, newest first."""
+    """List saved project records newest first, with legacy fallback only."""
     if not SAVED_WORKSHEET_PPT_DIR.exists():
         return []
 
@@ -11144,8 +11761,7 @@ def _saved_worksheet_ppt_files() -> list[Path]:
     for ppt_path in SAVED_WORKSHEET_PPT_DIR.glob("*.pptx"):
         if not ppt_path.is_file():
             continue
-        # Only expose files that also have the app-owned worksheet snapshot;
-        # these are the PPTs that can genuinely be loaded back for editing.
+        # Only expose files that also have the app-owned editable state sidecar.
         if not _saved_worksheet_ppt_sidecar_path(ppt_path).exists():
             continue
         files.append(ppt_path)
@@ -11156,11 +11772,77 @@ def _saved_worksheet_ppt_files() -> list[Path]:
         except OSError:
             return 0
 
-    return sorted(files, key=_mtime, reverse=True)
+    files = sorted(files, key=_mtime, reverse=True)
+
+    # Complete-project saves are authoritative.  Once at least one exists, do
+    # not mix the older worksheet-only records into the same reopen workflow;
+    # otherwise a user can accidentally reload worksheet_001_* and see only one
+    # worksheet even though the project save itself contains the full section.
+    project_files = [
+        ppt_path
+        for ppt_path in files
+        if _saved_ppt_is_complete_project(ppt_path)
+    ]
+    return project_files if project_files else files
+
+
+def _delete_saved_worksheet_ppt(ppt_filename: str) -> tuple[bool, str]:
+    """Delete exactly one saved project PPT and its editable-state sidecar."""
+    filename = Path(str(ppt_filename or "")).name
+    if not filename or Path(filename).suffix.lower() != ".pptx":
+        return False, "No saved project was selected."
+
+    ppt_path = SAVED_WORKSHEET_PPT_DIR / filename
+    state_path = _saved_worksheet_ppt_sidecar_path(ppt_path)
+
+    if not ppt_path.is_file() and not state_path.is_file():
+        return False, "The selected saved project is no longer available."
+
+    try:
+        # A saved-project record consists only of these two app-owned files.
+        # Delete both and leave every other saved-project record untouched.
+        ppt_path.unlink(missing_ok=True)
+        state_path.unlink(missing_ok=True)
+    except Exception as exc:
+        log_app_error("Delete saved project PPT", exc)
+        return False, "Could not delete the selected saved project."
+
+    if ppt_path.exists() or state_path.exists():
+        return False, "Could not completely delete the selected saved project."
+
+    return True, f"Deleted {filename}"
+
+
+def _saved_project_auxiliary_state_keys(worksheet_id: int) -> tuple[str, ...]:
+    """Return worksheet-scoped state that must survive a complete project save."""
+    worksheet_id = int(worksheet_id)
+    return (
+        _worksheet_component_count_adjustments_key(worksheet_id),
+        _connection_history_key(worksheet_id),
+        _connection_history_index_key(worksheet_id),
+        _editor_history_key(worksheet_id),
+        _editor_history_index_key(worksheet_id),
+        _manual_edit_png_key(worksheet_id),
+        _manual_edit_signature_key(worksheet_id),
+        _manual_connection_overrides_key(worksheet_id),
+        _manual_component_overrides_key(worksheet_id),
+        _manual_connection_source_key(worksheet_id),
+        _active_connection_transport_key(worksheet_id),
+        _worksheet_render_sync_pending_key(worksheet_id),
+        f"_ppt_sync_pending_{worksheet_id}",
+        f"price_details_adjustment_{worksheet_id}",
+        f"price_details_components_{worksheet_id}",
+        f"_auto_wireless_components_{worksheet_id}",
+        f"_auto_requested_connection_components_{worksheet_id}",
+        f"_auto_trained_requirement_components_{worksheet_id}",
+        f"pending_component_connection_source_{worksheet_id}",
+        f"image_orientation_{worksheet_id}",
+        f"sketch_upload_generation_{worksheet_id}",
+    )
 
 
 def _worksheet_snapshot_for_saved_ppt(worksheet_id: int) -> tuple[dict, dict]:
-    """Capture only the selected worksheet and its existing edit-related state."""
+    """Capture one worksheet and its existing worksheet-scoped state."""
     worksheet_id = int(worksheet_id)
     source_sheet = None
     for sheet in list(st.session_state.get("worksheets", []) or []):
@@ -11178,7 +11860,7 @@ def _worksheet_snapshot_for_saved_ppt(worksheet_id: int) -> tuple[dict, dict]:
 
     # The active worksheet still uses the application's existing legacy state
     # keys while it is being edited. Overlay those values into the snapshot so a
-    # PPT save always captures the exact current edit, even before another rerun.
+    # save always captures the exact current edit, even before another rerun.
     if int(st.session_state.get("active_worksheet_id", -1)) == worksheet_id:
         snapshot["selected_components"] = list(
             st.session_state.get("selected_components", []) or []
@@ -11198,26 +11880,8 @@ def _worksheet_snapshot_for_saved_ppt(worksheet_id: int) -> tuple[dict, dict]:
         for output_key in WORKSHEET_OUTPUT_KEYS:
             snapshot[output_key] = st.session_state.get(output_key)
 
-    auxiliary_keys = (
-        _worksheet_component_count_adjustments_key(worksheet_id),
-        _connection_history_key(worksheet_id),
-        _connection_history_index_key(worksheet_id),
-        _editor_history_key(worksheet_id),
-        _editor_history_index_key(worksheet_id),
-        _manual_edit_png_key(worksheet_id),
-        _manual_edit_signature_key(worksheet_id),
-        _manual_connection_overrides_key(worksheet_id),
-        _manual_component_overrides_key(worksheet_id),
-        _manual_connection_source_key(worksheet_id),
-        _active_connection_transport_key(worksheet_id),
-        _worksheet_render_sync_pending_key(worksheet_id),
-        f"_ppt_sync_pending_{worksheet_id}",
-        f"price_details_adjustment_{worksheet_id}",
-        f"price_details_components_{worksheet_id}",
-    )
-
     auxiliary_state: dict = {}
-    for state_key in auxiliary_keys:
+    for state_key in _saved_project_auxiliary_state_keys(worksheet_id):
         if state_key not in st.session_state:
             continue
         try:
@@ -11228,19 +11892,815 @@ def _worksheet_snapshot_for_saved_ppt(worksheet_id: int) -> tuple[dict, dict]:
     return snapshot, auxiliary_state
 
 
+def _project_snapshot_for_saved_ppt(active_worksheet_id: int) -> dict:
+    """Capture the complete current project without changing any UI behavior."""
+    active_worksheet_id = int(active_worksheet_id)
+
+    if st.session_state.get("worksheets"):
+        persist_active_worksheet_state()
+
+    worksheet_snapshots: list[dict] = []
+    all_auxiliary_state: dict = {}
+
+    for source_sheet in list(st.session_state.get("worksheets", []) or []):
+        try:
+            worksheet_id = int(source_sheet.get("id"))
+        except (TypeError, ValueError):
+            continue
+
+        worksheet_snapshot, worksheet_auxiliary_state = (
+            _worksheet_snapshot_for_saved_ppt(worksheet_id)
+        )
+        worksheet_snapshots.append(worksheet_snapshot)
+        all_auxiliary_state.update(worksheet_auxiliary_state)
+
+    default_next_worksheet_id = (
+        max(
+            [
+                int(sheet.get("id", 0) or 0)
+                for sheet in worksheet_snapshots
+            ]
+            + [0]
+        )
+        + 1
+    )
+
+    saved_page_token = str(
+        st.session_state.get(
+            _WORKSHEET_PAGE_FLOW_KEY,
+            _worksheet_page_flow_token(
+                "worksheet",
+                active_worksheet_id,
+            ),
+        )
+        or ""
+    ).strip().lower()
+
+    saved_global_state = {
+        "welcome_page_display_name": st.session_state.get(
+            "welcome_page_display_name",
+            "",
+        ),
+        "active_worksheet_id": active_worksheet_id,
+        "next_worksheet_id": st.session_state.get(
+            "next_worksheet_id",
+            default_next_worksheet_id,
+        ),
+        _WORKSHEET_PAGE_FLOW_KEY: saved_page_token,
+        "_worksheet_page_flow_last_active_id": st.session_state.get(
+            "_worksheet_page_flow_last_active_id",
+            active_worksheet_id,
+        ),
+    }
+
+    # Save the complete page/sheet sequence explicitly instead of relying on the
+    # currently active worksheet to recreate it later.  Price Details remains the
+    # existing calculated page; only its worksheet-specific state is persisted.
+    page_sequence: list[dict] = [
+        {
+            "token": "welcome",
+            "page_type": "welcome",
+            "worksheet_id": None,
+        }
+    ]
+    price_details: dict[int, dict] = {}
+
+    for worksheet_snapshot in worksheet_snapshots:
+        worksheet_id = int(worksheet_snapshot.get("id"))
+        worksheet_token = _worksheet_page_flow_token(
+            "worksheet",
+            worksheet_id,
+        )
+        price_token = _worksheet_page_flow_token(
+            "price",
+            worksheet_id,
+        )
+
+        page_sequence.append(
+            {
+                "token": worksheet_token,
+                "page_type": "worksheet",
+                "worksheet_id": worksheet_id,
+            }
+        )
+        page_sequence.append(
+            {
+                "token": price_token,
+                "page_type": "price",
+                "worksheet_id": worksheet_id,
+            }
+        )
+
+        price_components_key = f"price_details_components_{worksheet_id}"
+        price_adjustment_key = f"price_details_adjustment_{worksheet_id}"
+
+        if price_components_key in all_auxiliary_state:
+            price_components = list(
+                all_auxiliary_state.get(price_components_key, []) or []
+            )
+        else:
+            price_components = list(
+                worksheet_snapshot.get("selected_components", []) or []
+            )
+
+        price_adjustment = dict(
+            all_auxiliary_state.get(price_adjustment_key, {}) or {}
+        )
+
+        price_details[worksheet_id] = {
+            "components": price_components,
+            "adjustment": price_adjustment,
+        }
+
+    # Store the complete project as actual ordered page records as well as the
+    # existing worksheet collections.  Restore can therefore reconstruct the
+    # exact section directly rather than inferring pages from the active sheet.
+    complete_project_pages: list[dict] = [
+        {
+            "token": "welcome",
+            "page_type": "welcome",
+            "worksheet_id": None,
+            "welcome_state": {
+                "display_name": str(
+                    saved_global_state.get("welcome_page_display_name", "") or ""
+                ),
+            },
+        }
+    ]
+    for worksheet_snapshot in worksheet_snapshots:
+        worksheet_id = int(worksheet_snapshot.get("id"))
+        complete_project_pages.append(
+            {
+                "token": _worksheet_page_flow_token(
+                    "worksheet",
+                    worksheet_id,
+                ),
+                "page_type": "worksheet",
+                "worksheet_id": worksheet_id,
+                "worksheet": copy.deepcopy(worksheet_snapshot),
+            }
+        )
+        complete_project_pages.append(
+            {
+                "token": _worksheet_page_flow_token(
+                    "price",
+                    worksheet_id,
+                ),
+                "page_type": "price",
+                "worksheet_id": worksheet_id,
+                "price_details": copy.deepcopy(
+                    price_details.get(worksheet_id, {})
+                ),
+            }
+        )
+
+    try:
+        worksheet_snapshots = copy.deepcopy(worksheet_snapshots)
+    except Exception:
+        pass
+    try:
+        all_auxiliary_state = copy.deepcopy(all_auxiliary_state)
+    except Exception:
+        pass
+    try:
+        saved_global_state = copy.deepcopy(saved_global_state)
+    except Exception:
+        pass
+    try:
+        page_sequence = copy.deepcopy(page_sequence)
+    except Exception:
+        pass
+    try:
+        price_details = copy.deepcopy(price_details)
+    except Exception:
+        pass
+
+    return {
+        "worksheets": worksheet_snapshots,
+        # Authoritative worksheet creation/display order.
+        "worksheet_order": [
+            int(sheet.get("id"))
+            for sheet in worksheet_snapshots
+        ],
+        "worksheet_count": len(worksheet_snapshots),
+        # Authoritative full project page order:
+        # Welcome -> Worksheet 1 -> Price 1 -> Worksheet 2 -> Price 2 -> ...
+        "page_sequence": page_sequence,
+        "page_count": len(page_sequence),
+        # Exact ordered page records.  This is the authoritative complete-project
+        # representation for new saves.
+        "project_pages": complete_project_pages,
+        # Explicit per-worksheet Price Details state.
+        "price_details": price_details,
+        "auxiliary_state": all_auxiliary_state,
+        "global_state": saved_global_state,
+    }
+
+
+def _apply_pending_saved_project_restore_if_needed() -> None:
+    """Restore a complete saved project before any worksheet widgets are built."""
+    pending_restore = st.session_state.pop(
+        "_pending_saved_project_restore",
+        None,
+    )
+    if not isinstance(pending_restore, dict):
+        return
+
+    project_snapshot = pending_restore.get("project")
+    if not isinstance(project_snapshot, dict):
+        return
+
+    # Version 5+ complete-project saves carry the actual ordered page records.
+    # Prefer those records so every Worksheet and matching Price Details page is
+    # restored from what was saved, not reconstructed from whichever sheet was
+    # active when Save was clicked.
+    saved_project_pages = project_snapshot.get("project_pages")
+    saved_worksheets = project_snapshot.get("worksheets")
+    if isinstance(saved_project_pages, list) and saved_project_pages:
+        page_worksheets: list[dict] = []
+        page_prices: dict[int, dict] = {}
+        expected_price_for: int | None = None
+        project_pages_valid = True
+        welcome_seen = False
+
+        for page_index, page_record in enumerate(saved_project_pages):
+            if not isinstance(page_record, dict):
+                project_pages_valid = False
+                break
+
+            page_type = str(
+                page_record.get("page_type", "") or ""
+            ).strip().lower()
+
+            if page_index == 0:
+                if page_type != "welcome":
+                    project_pages_valid = False
+                    break
+                welcome_seen = True
+                continue
+
+            try:
+                page_worksheet_id = int(
+                    page_record.get("worksheet_id")
+                )
+            except (TypeError, ValueError):
+                project_pages_valid = False
+                break
+
+            if page_type == "worksheet":
+                if expected_price_for is not None:
+                    project_pages_valid = False
+                    break
+                worksheet_state = page_record.get("worksheet")
+                if not isinstance(worksheet_state, dict):
+                    project_pages_valid = False
+                    break
+                worksheet_state = copy.deepcopy(worksheet_state)
+                worksheet_state["id"] = page_worksheet_id
+                page_worksheets.append(worksheet_state)
+                expected_price_for = page_worksheet_id
+                continue
+
+            if page_type == "price":
+                if expected_price_for != page_worksheet_id:
+                    project_pages_valid = False
+                    break
+                price_state = page_record.get("price_details", {})
+                if not isinstance(price_state, dict):
+                    project_pages_valid = False
+                    break
+                page_prices[page_worksheet_id] = copy.deepcopy(
+                    price_state
+                )
+                expected_price_for = None
+                continue
+
+            project_pages_valid = False
+            break
+
+        if (
+            project_pages_valid
+            and welcome_seen
+            and expected_price_for is None
+            and page_worksheets
+            and len(page_prices) == len(page_worksheets)
+            and len(saved_project_pages)
+            == 1 + (2 * len(page_worksheets))
+        ):
+            saved_worksheets = page_worksheets
+            # Make the page-record price data authoritative for this restore.
+            project_snapshot["price_details"] = page_prices
+            project_snapshot["worksheet_order"] = [
+                int(sheet.get("id"))
+                for sheet in page_worksheets
+            ]
+            project_snapshot["page_sequence"] = [
+                {
+                    "token": str(page.get("token", "") or ""),
+                    "page_type": str(
+                        page.get("page_type", "") or ""
+                    ),
+                    "worksheet_id": page.get("worksheet_id"),
+                }
+                for page in saved_project_pages
+            ]
+
+    if not isinstance(saved_worksheets, list) or not saved_worksheets:
+        return
+
+    try:
+        restored_worksheets = copy.deepcopy(saved_worksheets)
+    except Exception:
+        restored_worksheets = list(saved_worksheets)
+
+    restored_ids: list[int] = []
+    worksheet_by_id: dict[int, dict] = {}
+    for sheet in restored_worksheets:
+        if not isinstance(sheet, dict):
+            return
+        try:
+            worksheet_id = int(sheet.get("id"))
+        except (TypeError, ValueError):
+            return
+        if worksheet_id in restored_ids:
+            return
+        restored_ids.append(worksheet_id)
+        worksheet_by_id[worksheet_id] = sheet
+
+    # Use the saved page manifest as the first authority for worksheet order.
+    # A valid complete-project manifest is always:
+    # Welcome -> Worksheet N -> Price N -> Worksheet N+1 -> Price N+1 -> ...
+    saved_page_sequence = project_snapshot.get("page_sequence")
+    page_order_ids: list[int] = []
+    valid_saved_page_sequence = False
+    if isinstance(saved_page_sequence, list) and saved_page_sequence:
+        normalized_pages: list[tuple[str, int | None, str]] = []
+        for page in saved_page_sequence:
+            if not isinstance(page, dict):
+                normalized_pages = []
+                break
+            page_type = str(page.get("page_type", "") or "").strip().lower()
+            token = str(page.get("token", "") or "").strip().lower()
+            raw_worksheet_id = page.get("worksheet_id")
+            if page_type == "welcome":
+                normalized_pages.append(("welcome", None, token or "welcome"))
+                continue
+            if page_type not in {"worksheet", "price"}:
+                normalized_pages = []
+                break
+            try:
+                page_worksheet_id = int(raw_worksheet_id)
+            except (TypeError, ValueError):
+                normalized_pages = []
+                break
+            normalized_pages.append((page_type, page_worksheet_id, token))
+
+        expected_page_count = 1 + (2 * len(restored_ids))
+        if (
+            len(normalized_pages) == expected_page_count
+            and normalized_pages[0][0] == "welcome"
+        ):
+            candidate_order: list[int] = []
+            page_index = 1
+            manifest_valid = True
+            while page_index < len(normalized_pages):
+                worksheet_page = normalized_pages[page_index]
+                price_page = normalized_pages[page_index + 1]
+                if (
+                    worksheet_page[0] != "worksheet"
+                    or price_page[0] != "price"
+                    or worksheet_page[1] != price_page[1]
+                ):
+                    manifest_valid = False
+                    break
+                candidate_order.append(int(worksheet_page[1]))
+                page_index += 2
+
+            if (
+                manifest_valid
+                and len(candidate_order) == len(restored_ids)
+                and len(set(candidate_order)) == len(candidate_order)
+                and set(candidate_order) == set(restored_ids)
+            ):
+                page_order_ids = candidate_order
+                valid_saved_page_sequence = True
+
+    # Backward compatibility for earlier complete-project saves that did not yet
+    # carry the explicit page manifest.
+    if not page_order_ids:
+        saved_order = project_snapshot.get("worksheet_order")
+        if isinstance(saved_order, (list, tuple)) and saved_order:
+            try:
+                normalized_order = [int(value) for value in saved_order]
+            except (TypeError, ValueError):
+                normalized_order = []
+
+            if (
+                len(normalized_order) == len(restored_ids)
+                and len(set(normalized_order)) == len(normalized_order)
+                and set(normalized_order) == set(restored_ids)
+            ):
+                page_order_ids = normalized_order
+
+    if not page_order_ids:
+        page_order_ids = list(restored_ids)
+
+    restored_worksheets = [
+        worksheet_by_id[worksheet_id]
+        for worksheet_id in page_order_ids
+    ]
+    restored_ids = list(page_order_ids)
+
+    # Discard only pending navigation/delete events from the previously open
+    # project. Without this, a queued selector action can immediately override the
+    # restored project on the same rerun.
+    st.session_state.pop("_pending_worksheet_selector", None)
+    st.session_state.pop("_pending_deleted_worksheet_ids", None)
+    st.session_state.pop("_worksheet_dropdown_last_event", None)
+    st.session_state.pop("worksheet_dropdown_double_click_rename", None)
+
+    existing_ids: list[int] = []
+    for sheet in list(st.session_state.get("worksheets", []) or []):
+        try:
+            existing_ids.append(int(sheet.get("id")))
+        except (TypeError, ValueError):
+            continue
+
+    # Remove only worksheet-scoped state belonging to the current/restored
+    # project so stale data from the previously open project cannot leak in.
+    for worksheet_id in set(existing_ids + restored_ids):
+        for state_key in _saved_project_auxiliary_state_keys(worksheet_id):
+            st.session_state.pop(state_key, None)
+
+        st.session_state.pop(
+            f"_worksheet_render_bundle_cache_{worksheet_id}",
+            None,
+        )
+        st.session_state[
+            f"connection_picker_generation_{worksheet_id}"
+        ] = int(
+            st.session_state.get(
+                f"connection_picker_generation_{worksheet_id}",
+                0,
+            )
+            or 0
+        ) + 1
+
+        for state_key in list(st.session_state.keys()):
+            if str(state_key).startswith(
+                f"required_connection_compact_{worksheet_id}_"
+            ) or str(state_key).startswith(
+                f"connection_config_target_{worksheet_id}_"
+            ):
+                st.session_state.pop(state_key, None)
+
+    saved_auxiliary_state = project_snapshot.get(
+        "auxiliary_state",
+        {},
+    )
+    if isinstance(saved_auxiliary_state, dict):
+        allowed_auxiliary_keys = {
+            state_key
+            for worksheet_id in restored_ids
+            for state_key in _saved_project_auxiliary_state_keys(
+                worksheet_id
+            )
+        }
+        for state_key, state_value in saved_auxiliary_state.items():
+            if state_key not in allowed_auxiliary_keys:
+                continue
+            try:
+                st.session_state[state_key] = copy.deepcopy(state_value)
+            except Exception:
+                st.session_state[state_key] = state_value
+
+    # Version 4+ snapshots store every Price Details page explicitly. Restore this
+    # after the generic auxiliary state so each worksheet's pricing page is exact.
+    saved_price_details = project_snapshot.get("price_details", {})
+    if isinstance(saved_price_details, dict):
+        for worksheet_id in restored_ids:
+            price_state = (
+                saved_price_details.get(worksheet_id)
+                or saved_price_details.get(str(worksheet_id))
+            )
+            if not isinstance(price_state, dict):
+                continue
+
+            price_components_key = f"price_details_components_{worksheet_id}"
+            price_adjustment_key = f"price_details_adjustment_{worksheet_id}"
+
+            if "components" in price_state:
+                try:
+                    st.session_state[price_components_key] = copy.deepcopy(
+                        list(price_state.get("components", []) or [])
+                    )
+                except Exception:
+                    st.session_state[price_components_key] = list(
+                        price_state.get("components", []) or []
+                    )
+
+            if "adjustment" in price_state:
+                try:
+                    st.session_state[price_adjustment_key] = copy.deepcopy(
+                        dict(price_state.get("adjustment", {}) or {})
+                    )
+                except Exception:
+                    st.session_state[price_adjustment_key] = dict(
+                        price_state.get("adjustment", {}) or {}
+                    )
+
+    st.session_state["worksheets"] = restored_worksheets
+
+    saved_global_state = project_snapshot.get("global_state", {})
+    if not isinstance(saved_global_state, dict):
+        saved_global_state = {}
+
+    try:
+        active_worksheet_id = int(
+            saved_global_state.get(
+                "active_worksheet_id",
+                restored_ids[0],
+            )
+        )
+    except (TypeError, ValueError):
+        active_worksheet_id = restored_ids[0]
+
+    if active_worksheet_id not in restored_ids:
+        active_worksheet_id = restored_ids[0]
+
+    try:
+        next_worksheet_id = int(
+            saved_global_state.get(
+                "next_worksheet_id",
+                max(restored_ids) + 1,
+            )
+        )
+    except (TypeError, ValueError):
+        next_worksheet_id = max(restored_ids) + 1
+
+    next_worksheet_id = max(
+        next_worksheet_id,
+        max(restored_ids) + 1,
+    )
+
+    # Restore the saved page itself only if it still belongs to the complete page
+    # manifest. This preserves Welcome/Worksheet/Price position without dropping
+    # any page from the project.
+    saved_page_token = str(
+        saved_global_state.get(
+            _WORKSHEET_PAGE_FLOW_KEY,
+            "",
+        )
+        or ""
+    ).strip().lower()
+
+    valid_page_tokens = {"welcome"}
+    for worksheet_id in restored_ids:
+        valid_page_tokens.add(
+            _worksheet_page_flow_token("worksheet", worksheet_id)
+        )
+        valid_page_tokens.add(
+            _worksheet_page_flow_token("price", worksheet_id)
+        )
+
+    if saved_page_token not in valid_page_tokens:
+        saved_page_token = _worksheet_page_flow_token(
+            "worksheet",
+            active_worksheet_id,
+        )
+
+    saved_page_type, saved_page_worksheet_id = (
+        _parse_worksheet_page_flow_token(saved_page_token)
+    )
+    if (
+        saved_page_type in {"worksheet", "price"}
+        and saved_page_worksheet_id in restored_ids
+    ):
+        active_worksheet_id = int(saved_page_worksheet_id)
+
+    st.session_state["active_worksheet_id"] = active_worksheet_id
+    st.session_state["worksheet_selector"] = active_worksheet_id
+    st.session_state["next_worksheet_id"] = next_worksheet_id
+    st.session_state["welcome_page_display_name"] = str(
+        saved_global_state.get(
+            "welcome_page_display_name",
+            "",
+        )
+        or ""
+    )
+    st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = saved_page_token
+    st.session_state[
+        "_worksheet_page_flow_last_active_id"
+    ] = active_worksheet_id
+
+    saved_ppt_state = pending_restore.get("ppt_state", {})
+    if isinstance(saved_ppt_state, dict):
+        for state_key in (
+            "ppt_session_base_bytes",
+            "ppt_session_diagrams",
+            "ppt_session_order",
+            "ppt_session_template_signature",
+        ):
+            if state_key in saved_ppt_state:
+                try:
+                    st.session_state[state_key] = copy.deepcopy(
+                        saved_ppt_state[state_key]
+                    )
+                except Exception:
+                    st.session_state[state_key] = saved_ppt_state[state_key]
+
+    ppt_bytes = bytes(pending_restore.get("ppt_bytes") or b"")
+    if ppt_bytes:
+        st.session_state["ppt_session_pptx_bytes"] = ppt_bytes
+        st.session_state["pptx_bytes"] = ppt_bytes
+        _write_current_ppt_session_file(ppt_bytes)
+
+def _materialize_complete_project_ppt_for_save() -> bytes:
+    """Build the saved PPT from every current worksheet in worksheet order.
+
+    Normal worksheet editing intentionally defers expensive PNG/PPT work. Save is
+    the explicit persistence boundary, so it must flush those deferred worksheet
+    visuals before the library entry is written. This affects Save only.
+    """
+    if st.session_state.get("worksheets"):
+        persist_active_worksheet_state()
+
+    ensure_ppt_session_state()
+
+    worksheets = list(st.session_state.get("worksheets", []) or [])
+    complete_diagrams: dict[str, dict] = {}
+    complete_order: list[str] = []
+
+    active_worksheet_id = int(
+        st.session_state.get("active_worksheet_id", 0) or 0
+    )
+
+    for sheet in worksheets:
+        if not isinstance(sheet, dict):
+            continue
+
+        try:
+            worksheet_id = int(sheet.get("id"))
+        except (TypeError, ValueError):
+            continue
+
+        diagram = sheet.get("diagram")
+        preview_png = sheet.get("preview_png")
+        pending_render_key = _worksheet_render_sync_pending_key(worksheet_id)
+
+        # Preserve an explicitly applied PPT image edit exactly as the existing
+        # PPT workflow does. Otherwise materialize a deferred worksheet render
+        # from that worksheet's own saved diagram/edit state.
+        manual_ppt_png = st.session_state.get(
+            _manual_edit_png_key(worksheet_id)
+        )
+        if manual_ppt_png:
+            preview_png = manual_ppt_png
+        elif (
+            diagram is not None
+            and (
+                st.session_state.get(pending_render_key)
+                or not preview_png
+            )
+        ):
+            try:
+                preview_png = create_preview_png(
+                    diagram=diagram,
+                    assets_dir=ASSETS_DIR,
+                    manual_route_overrides=st.session_state.get(
+                        _manual_connection_overrides_key(worksheet_id),
+                        {},
+                    )
+                    or {},
+                    manual_component_overrides=st.session_state.get(
+                        _manual_component_overrides_key(worksheet_id),
+                        {},
+                    )
+                    or {},
+                )
+            except Exception as exc:
+                log_app_error(
+                    f"Materialize worksheet {worksheet_id} for project save",
+                    exc,
+                )
+                preview_png = sheet.get("preview_png")
+
+            if preview_png:
+                sheet["preview_png"] = preview_png
+                try:
+                    sheet["pdf_bytes"] = png_to_pdf(preview_png)
+                except Exception as exc:
+                    log_app_error(
+                        f"Materialize worksheet {worksheet_id} PDF for project save",
+                        exc,
+                    )
+
+                if worksheet_id == active_worksheet_id:
+                    st.session_state["preview_png"] = preview_png
+                    if sheet.get("pdf_bytes") is not None:
+                        st.session_state["pdf_bytes"] = sheet.get("pdf_bytes")
+
+        if not preview_png:
+            continue
+
+        try:
+            preview_bytes = bytes(preview_png)
+        except Exception:
+            continue
+
+        if not preview_bytes:
+            continue
+
+        diagram_id = _ppt_session_diagram_id(worksheet_id)
+        complete_diagrams[diagram_id] = {
+            "worksheet_id": worksheet_id,
+            "png": preview_bytes,
+            "hash": hashlib.sha256(preview_bytes).hexdigest(),
+        }
+        complete_order.append(diagram_id)
+
+        # The deferred render/PPT flags have now been fully materialized by Save.
+        st.session_state.pop(pending_render_key, None)
+        st.session_state.pop(f"_ppt_sync_pending_{worksheet_id}", None)
+
+    st.session_state["ppt_session_diagrams"] = complete_diagrams
+    st.session_state["ppt_session_order"] = complete_order
+
+    ordered_diagrams = [
+        (
+            diagram_id,
+            complete_diagrams[diagram_id]["png"],
+        )
+        for diagram_id in complete_order
+        if diagram_id in complete_diagrams
+    ]
+
+    base_bytes = st.session_state.get("ppt_session_base_bytes")
+    if not base_bytes:
+        base_bytes = initialize_combined_ppt_session(
+            template_path=DEFAULT_PPT_TEMPLATE_PATH,
+            config_path=PPT_TEMPLATE_CONFIG_PATH,
+        )
+        st.session_state["ppt_session_base_bytes"] = base_bytes
+
+    combined = generate_combined_ppt_from_session(
+        session_base_ppt=base_bytes,
+        diagrams=ordered_diagrams,
+        config_path=PPT_TEMPLATE_CONFIG_PATH,
+        price_pages=_ppt_price_pages_for_diagrams(ordered_diagrams),
+    )
+
+    st.session_state["ppt_session_pptx_bytes"] = combined
+    st.session_state["pptx_bytes"] = combined
+    _write_current_ppt_session_file(combined)
+
+    # Persist any worksheet preview/PDF that was materialized above before the
+    # complete project snapshot is serialized into the library sidecar.
+    if st.session_state.get("worksheets"):
+        persist_active_worksheet_state()
+
+    return bytes(combined or b"")
+
+
 def _save_current_worksheet_ppt_to_library(
     worksheet_id: int,
     pptx_bytes: bytes | bytearray | None,
+    *,
+    project_snapshot: dict | None = None,
 ) -> Path | None:
-    """Persist a PPT plus the worksheet state required to reopen it for editing."""
+    """Persist the PPT plus the complete project/session required to reopen it."""
     data = bytes(pptx_bytes or b"")
     if not data:
         return None
 
     worksheet_id = int(worksheet_id)
-    worksheet_snapshot, auxiliary_state = _worksheet_snapshot_for_saved_ppt(
-        worksheet_id
+    if not isinstance(project_snapshot, dict):
+        project_snapshot = _project_snapshot_for_saved_ppt(worksheet_id)
+
+    worksheet_snapshot = next(
+        (
+            sheet
+            for sheet in list(project_snapshot.get("worksheets", []) or [])
+            if int(sheet.get("id", -1)) == worksheet_id
+        ),
+        None,
     )
+    if not isinstance(worksheet_snapshot, dict):
+        worksheet_snapshot, _ = _worksheet_snapshot_for_saved_ppt(
+            worksheet_id
+        )
+
+    active_auxiliary_keys = set(
+        _saved_project_auxiliary_state_keys(worksheet_id)
+    )
+    auxiliary_state = {
+        state_key: state_value
+        for state_key, state_value in dict(
+            project_snapshot.get("auxiliary_state", {}) or {}
+        ).items()
+        if state_key in active_auxiliary_keys
+    }
+
     worksheet_name = str(
         worksheet_snapshot.get("name") or f"Worksheet {worksheet_id}"
     ).strip()
@@ -11263,9 +12723,13 @@ def _save_current_worksheet_ppt_to_library(
             pass
 
     snapshot_payload = {
-        "version": 1,
+        "version": 4,
+        # Keep the original single-worksheet fields for backward compatibility
+        # with the existing saved-PPT workflow, while the project field is now
+        # the authoritative complete-session snapshot.
         "worksheet": worksheet_snapshot,
         "auxiliary_state": auxiliary_state,
+        "project": project_snapshot,
         "ppt_state": {
             "ppt_session_base_bytes": st.session_state.get(
                 "ppt_session_base_bytes"
@@ -11325,6 +12789,180 @@ def _save_current_worksheet_ppt_to_library(
                 pass
 
 
+def _save_complete_project_ppt_to_library(
+    pptx_bytes: bytes | bytearray | None,
+    preferred_worksheet_id: int,
+) -> Path | None:
+    """Save the entire current project as one authoritative library record."""
+    data = bytes(pptx_bytes or b"")
+    if not data:
+        return None
+
+    if st.session_state.get("worksheets"):
+        persist_active_worksheet_state()
+
+    worksheets = [
+        sheet
+        for sheet in list(st.session_state.get("worksheets", []) or [])
+        if isinstance(sheet, dict)
+    ]
+    if not worksheets:
+        return None
+
+    preferred_worksheet_id = int(preferred_worksheet_id)
+    actual_active_worksheet_id = int(
+        st.session_state.get(
+            "active_worksheet_id",
+            preferred_worksheet_id,
+        )
+        or preferred_worksheet_id
+    )
+
+    # Capture the project once, after all worksheet state has been persisted.
+    project_snapshot = _project_snapshot_for_saved_ppt(
+        actual_active_worksheet_id
+    )
+
+    saved_worksheets = list(
+        project_snapshot.get("worksheets", []) or []
+    )
+    project_pages = list(
+        project_snapshot.get("project_pages", []) or []
+    )
+
+    # A complete project must contain exactly:
+    # Welcome + (Worksheet + Price Details) for every worksheet.
+    if (
+        len(saved_worksheets) != len(worksheets)
+        or len(project_pages) != 1 + (2 * len(worksheets))
+    ):
+        return None
+
+    worksheet_ids: list[int] = []
+    for sheet in saved_worksheets:
+        try:
+            worksheet_ids.append(int(sheet.get("id")))
+        except (TypeError, ValueError):
+            return None
+
+    if len(worksheet_ids) != len(set(worksheet_ids)):
+        return None
+
+    SAVED_WORKSHEET_PPT_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Never replace an existing complete-project save.  Keep the original
+    # project-name filename for the first save, then allocate a numbered
+    # filename for every later save of the same project name.  This keeps all
+    # existing project data intact and allows the saved-project library to grow
+    # well beyond 500 entries without changing the existing selector/restore
+    # workflow.
+    base_stem = _saved_complete_project_ppt_safe_stem()
+    stem = base_stem
+    save_index = 1
+    while True:
+        ppt_path = SAVED_WORKSHEET_PPT_DIR / f"{stem}.pptx"
+        state_path = _saved_worksheet_ppt_sidecar_path(ppt_path)
+        if not ppt_path.exists() and not state_path.exists():
+            break
+        save_index += 1
+        stem = f"{base_stem}_{save_index:03d}"
+
+    snapshot_payload = {
+        "version": 5,
+        "kind": "complete_project",
+        "worksheet": next(
+            (
+                sheet
+                for sheet in saved_worksheets
+                if int(sheet.get("id", -1))
+                == actual_active_worksheet_id
+            ),
+            saved_worksheets[0],
+        ),
+        "project": project_snapshot,
+        "ppt_state": {
+            "ppt_session_base_bytes": st.session_state.get(
+                "ppt_session_base_bytes"
+            ),
+            "ppt_session_diagrams": st.session_state.get(
+                "ppt_session_diagrams", {}
+            ),
+            "ppt_session_order": st.session_state.get(
+                "ppt_session_order", []
+            ),
+            "ppt_session_template_signature": st.session_state.get(
+                "ppt_session_template_signature"
+            ),
+        },
+    }
+
+    ppt_tmp: Path | None = None
+    state_tmp: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb",
+            prefix=f"{stem}_",
+            suffix=".tmp.pptx",
+            dir=SAVED_WORKSHEET_PPT_DIR,
+            delete=False,
+        ) as temp_ppt:
+            temp_ppt.write(data)
+            temp_ppt.flush()
+            ppt_tmp = Path(temp_ppt.name)
+
+        with tempfile.NamedTemporaryFile(
+            mode="wb",
+            prefix=f"{stem}_",
+            suffix=".tmp.state",
+            dir=SAVED_WORKSHEET_PPT_DIR,
+            delete=False,
+        ) as temp_state:
+            pickle.dump(
+                snapshot_payload,
+                temp_state,
+                protocol=pickle.HIGHEST_PROTOCOL,
+            )
+            temp_state.flush()
+            state_tmp = Path(temp_state.name)
+
+        # Validate the sidecar before replacing the live saved project.
+        with state_tmp.open("rb") as verify_state_file:
+            verify_payload = pickle.load(verify_state_file)
+        verify_project = (
+            verify_payload.get("project", {})
+            if isinstance(verify_payload, dict)
+            else {}
+        )
+        verify_worksheets = list(
+            verify_project.get("worksheets", []) or []
+        )
+        verify_pages = list(
+            verify_project.get("project_pages", []) or []
+        )
+        if (
+            len(verify_worksheets) != len(worksheets)
+            or len(verify_pages) != 1 + (2 * len(worksheets))
+        ):
+            return None
+
+        os.replace(str(ppt_tmp), str(ppt_path))
+        ppt_tmp = None
+        os.replace(str(state_tmp), str(state_path))
+        state_tmp = None
+        return ppt_path
+    except Exception as exc:
+        log_app_error("Save complete project PPT library entry", exc)
+        return None
+    finally:
+        for temp_path in (ppt_tmp, state_tmp):
+            if temp_path is None:
+                continue
+            try:
+                temp_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+
+
 def _restore_saved_worksheet_ppt(ppt_filename: str) -> tuple[bool, str]:
     """Load one app-saved PPT and restore its worksheet for normal editing."""
     filename = Path(str(ppt_filename or "")).name
@@ -11333,6 +12971,22 @@ def _restore_saved_worksheet_ppt(ppt_filename: str) -> tuple[bool, str]:
 
     ppt_path = SAVED_WORKSHEET_PPT_DIR / filename
     state_path = _saved_worksheet_ppt_sidecar_path(ppt_path)
+
+    # If a stale selector event still points to an older worksheet-only record
+    # after a complete-project save was created, always reopen the authoritative
+    # complete-project record instead.  The visible selector is also filtered by
+    # _saved_worksheet_ppt_files(), so this path mainly protects the rerun in
+    # which an old widget value is still present.
+    if not _saved_ppt_is_complete_project(ppt_path):
+        complete_project_files = [
+            candidate
+            for candidate in _saved_worksheet_ppt_files()
+            if _saved_ppt_is_complete_project(candidate)
+        ]
+        if complete_project_files:
+            ppt_path = complete_project_files[0]
+            state_path = _saved_worksheet_ppt_sidecar_path(ppt_path)
+
     if not ppt_path.is_file() or not state_path.is_file():
         return False, "The selected saved PPT is no longer available."
 
@@ -11346,6 +13000,57 @@ def _restore_saved_worksheet_ppt(ppt_filename: str) -> tuple[bool, str]:
 
     if not isinstance(payload, dict) or not ppt_bytes:
         return False, "The selected saved PPT is not valid."
+
+    # Version 2 saves contain the complete project/session. Stage the restore and
+    # apply it at the start of the next rerun, before any Streamlit widgets are
+    # instantiated. This allows the Welcome Page and every worksheet to return
+    # together without changing the existing selector/UI workflow.
+    project_snapshot = payload.get("project")
+    if isinstance(project_snapshot, dict):
+        saved_worksheets = project_snapshot.get("worksheets")
+        if isinstance(saved_worksheets, list) and saved_worksheets:
+            restored_ids: list[int] = []
+            valid_project = True
+            for sheet in saved_worksheets:
+                if not isinstance(sheet, dict):
+                    valid_project = False
+                    break
+                try:
+                    worksheet_id = int(sheet.get("id"))
+                except (TypeError, ValueError):
+                    valid_project = False
+                    break
+                if worksheet_id in restored_ids:
+                    valid_project = False
+                    break
+                restored_ids.append(worksheet_id)
+
+            if valid_project:
+                try:
+                    pending_project = copy.deepcopy(project_snapshot)
+                except Exception:
+                    pending_project = project_snapshot
+
+                try:
+                    pending_ppt_state = copy.deepcopy(
+                        payload.get("ppt_state", {}) or {}
+                    )
+                except Exception:
+                    pending_ppt_state = payload.get("ppt_state", {}) or {}
+
+                st.session_state["_pending_saved_project_restore"] = {
+                    "project": pending_project,
+                    "ppt_state": pending_ppt_state,
+                    "ppt_bytes": ppt_bytes,
+                }
+
+                # Do not apply the project here. This function is called from the
+                # saved-PPT selectbox after the Welcome Page name widget has already
+                # been instantiated in the current Streamlit run. The caller reruns
+                # immediately; ensure_worksheet_state() applies this staged project
+                # at the start of that next run, before any widget-owned session-state
+                # keys (including welcome_page_display_name) are instantiated.
+                return True, f"Loaded {ppt_path.name}"
 
     worksheet_snapshot = payload.get("worksheet")
     if not isinstance(worksheet_snapshot, dict):
@@ -13267,6 +14972,22 @@ st.markdown(
     opacity: 1 !important;
 }
 
+/* PPT selector: preserve the original blue surface even when Streamlit renders
+   the select control in its disabled/empty state. Keep the outer wrappers
+   transparent so the original rounded corners remain clean. */
+[class*="st-key-saved_worksheet_ppt_selector_"] [data-baseweb="select"] > div,
+[class*="st-key-saved_worksheet_ppt_selector_"] [data-baseweb="select"] > div > div,
+[class*="st-key-saved_worksheet_ppt_selector_"] [data-baseweb="select"] > div > div > div,
+[class*="st-key-saved_worksheet_ppt_selector_"] [role="combobox"] {
+    background: #0b4f8a !important;
+    background-color: #0b4f8a !important;
+}
+[class*="st-key-saved_worksheet_ppt_selector_"] [data-testid="stSelectbox"] > div,
+[class*="st-key-saved_worksheet_ppt_selector_"] [data-baseweb="select"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
 /* Required connection dropdowns + Type selector */
 [class*="st-key-reference_connection_section_"] [data-baseweb="select"] > div {
     background-color: var(--rts-marked-control-dark) !important;
@@ -13316,6 +15037,199 @@ st.markdown(
 
 
 
+
+# =============================================================================
+# TYPE DROPDOWN SELECTED-VALUE VISIBILITY ONLY
+# Keeps the existing Type dropdown outer box dimensions, design, colors, menu,
+# layout and behavior unchanged. Only the internal closed-control value lane is
+# given the space already available inside that same box so Automatic / Wired /
+# Wireless remain fully visible after selection.
+# =============================================================================
+st.markdown(
+    """
+<style>
+/* Scope ONLY to the existing Type selectbox by its stable widget key. */
+[class*="st-key-connection_mode_"] [data-baseweb="select"] > div {
+    /* Outer width/height are intentionally untouched. Reclaim only unused
+       horizontal padding inside the existing control. */
+    padding-left: 7px !important;
+    padding-right: 3px !important;
+}
+
+/* Let the selected-value lane use all remaining room inside the unchanged box. */
+[class*="st-key-connection_mode_"] [data-baseweb="select"] > div > div:first-child {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+/* The selected text itself must never be shortened by ellipsis/clipping. */
+[class*="st-key-connection_mode_"] [data-baseweb="select"] > div > div:first-child div,
+[class*="st-key-connection_mode_"] [data-baseweb="select"] > div > div:first-child span {
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+/* Keep the existing arrow, but reserve only the space it actually needs.
+   This does not alter the outer control size or dropdown functionality. */
+[class*="st-key-connection_mode_"] [data-baseweb="select"] > div > div:last-child {
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
+    margin-left: 2px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+</style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# BaseWeb can recreate the closed selectbox DOM after a selection. Reapply the
+# same visibility-only internal sizing to the live node after every rerender.
+components.html(
+    r"""
+<script>
+(() => {
+  let parentWindow;
+  let doc;
+  try {
+    parentWindow = window.parent;
+    doc = parentWindow.document;
+  } catch (_) {
+    return;
+  }
+
+  const GLOBAL_KEY = "__rtsTypeSelectedValueVisibilityV2";
+  const previous = parentWindow[GLOBAL_KEY];
+  if (previous && typeof previous.cleanup === "function") {
+    try { previous.cleanup(); } catch (_) {}
+  }
+
+  const labels = new Set(["Automatic", "Wired", "Wireless"]);
+  const controller = new parentWindow.AbortController();
+  const signal = controller.signal;
+
+  function getTypeWidget() {
+    return doc.querySelector('[class*="st-key-connection_mode_"]');
+  }
+
+  function findSelectedText(control) {
+    const nodes = Array.from(control.querySelectorAll("div, span"));
+    const matches = nodes.filter((node) =>
+      labels.has(String(node.textContent || "").trim())
+    );
+    if (!matches.length) return null;
+
+    // Choose the deepest exact text node so no menu/outer wrapper is altered.
+    for (const node of matches) {
+      const childHasSameText = Array.from(node.children || []).some((child) =>
+        labels.has(String(child.textContent || "").trim())
+      );
+      if (!childHasSameText) return node;
+    }
+    return matches[matches.length - 1];
+  }
+
+  function applySelectedValueFix() {
+    const widget = getTypeWidget();
+    if (!widget) return;
+
+    const select = widget.querySelector('[data-baseweb="select"]');
+    if (!select) return;
+
+    const control = select.firstElementChild;
+    if (!control) return;
+
+    // Preserve the existing outer dimensions; only reduce unused inner padding.
+    control.style.setProperty("padding-left", "7px", "important");
+    control.style.setProperty("padding-right", "3px", "important");
+
+    const valueLane = control.firstElementChild;
+    const indicatorLane = control.lastElementChild;
+
+    if (valueLane) {
+      valueLane.style.setProperty("flex", "1 1 0%", "important");
+      valueLane.style.setProperty("min-width", "0", "important");
+      valueLane.style.setProperty("width", "auto", "important");
+      valueLane.style.setProperty("max-width", "none", "important");
+      valueLane.style.setProperty("overflow", "visible", "important");
+    }
+
+    if (indicatorLane && indicatorLane !== valueLane) {
+      indicatorLane.style.setProperty("flex", "0 0 18px", "important");
+      indicatorLane.style.setProperty("width", "18px", "important");
+      indicatorLane.style.setProperty("min-width", "18px", "important");
+      indicatorLane.style.setProperty("max-width", "18px", "important");
+      indicatorLane.style.setProperty("margin-left", "2px", "important");
+      indicatorLane.style.setProperty("padding-left", "0", "important");
+      indicatorLane.style.setProperty("padding-right", "0", "important");
+    }
+
+    const selectedText = findSelectedText(control);
+    if (!selectedText) return;
+
+    selectedText.style.setProperty("width", "auto", "important");
+    selectedText.style.setProperty("min-width", "max-content", "important");
+    selectedText.style.setProperty("max-width", "none", "important");
+    selectedText.style.setProperty("white-space", "nowrap", "important");
+    selectedText.style.setProperty("overflow", "visible", "important");
+    selectedText.style.setProperty("text-overflow", "clip", "important");
+
+    // Clear clipping only on ancestors inside the value lane. Do not touch the
+    // control itself, its dimensions, typography, colors, or dropdown menu.
+    let node = selectedText.parentElement;
+    while (node && valueLane && node !== control) {
+      node.style.setProperty("min-width", "0", "important");
+      node.style.setProperty("max-width", "none", "important");
+      node.style.setProperty("overflow", "visible", "important");
+      node.style.setProperty("text-overflow", "clip", "important");
+      if (node === valueLane) break;
+      node = node.parentElement;
+    }
+  }
+
+  const observer = new parentWindow.MutationObserver(() => {
+    parentWindow.requestAnimationFrame(applySelectedValueFix);
+  });
+  observer.observe(doc.body, { childList: true, subtree: true, characterData: true });
+
+  doc.addEventListener(
+    "click",
+    () => parentWindow.setTimeout(applySelectedValueFix, 0),
+    { capture: true, signal }
+  );
+  doc.addEventListener(
+    "change",
+    () => parentWindow.setTimeout(applySelectedValueFix, 0),
+    { capture: true, signal }
+  );
+
+  parentWindow.requestAnimationFrame(applySelectedValueFix);
+  parentWindow.setTimeout(applySelectedValueFix, 50);
+  parentWindow.setTimeout(applySelectedValueFix, 180);
+
+  parentWindow[GLOBAL_KEY] = {
+    cleanup() {
+      try { observer.disconnect(); } catch (_) {}
+      try { controller.abort(); } catch (_) {}
+    },
+  };
+})();
+</script>
+    """,
+    height=0,
+    width=0,
+)
+
+
 # =============================================================================
 # MAIN WORKSPACE
 # =============================================================================
@@ -13324,6 +15238,33 @@ st.markdown(
 # each worksheet keeps its own selections and generated outputs independently.
 ensure_worksheet_state()
 handle_worksheet_dropdown_rename_request()
+
+# Keep the page selected by the existing ❮ / ❯ flow authoritative before the
+# worksheet's legacy state keys are loaded. This is especially important after
+# reopening a saved project: a restored Worksheet/Price token must load that
+# worksheet rather than being coerced back to the previously active worksheet.
+_page_flow_type_before_load, _page_flow_worksheet_id_before_load = (
+    _parse_worksheet_page_flow_token(
+        st.session_state.get(_WORKSHEET_PAGE_FLOW_KEY, "")
+    )
+)
+_valid_page_flow_worksheet_ids = {
+    int(sheet.get("id"))
+    for sheet in list(st.session_state.get("worksheets", []) or [])
+    if isinstance(sheet, dict) and sheet.get("id") is not None
+}
+if (
+    _page_flow_type_before_load in {"worksheet", "price"}
+    and _page_flow_worksheet_id_before_load
+    in _valid_page_flow_worksheet_ids
+):
+    st.session_state["active_worksheet_id"] = int(
+        _page_flow_worksheet_id_before_load
+    )
+    st.session_state["worksheet_selector"] = int(
+        _page_flow_worksheet_id_before_load
+    )
+
 load_active_worksheet_state()
 active_worksheet = get_active_worksheet()
 active_worksheet_id = active_worksheet["id"]
@@ -13349,10 +15290,26 @@ _preserve_matching_price_page = (
     _current_flow_page_type == "price"
     and _current_flow_worksheet_id == int(active_worksheet_id)
 )
+_arrow_navigation_target = str(
+    st.session_state.get(
+        "_worksheet_page_flow_navigation_target",
+        "",
+    )
+    or ""
+).strip().lower()
+_preserve_arrow_navigation_target = bool(
+    _arrow_navigation_target
+    and _arrow_navigation_target
+    == str(
+        st.session_state.get(_WORKSHEET_PAGE_FLOW_KEY, "")
+        or ""
+    ).strip().lower()
+)
 if (
     _previous_flow_active_id is not None
     and int(_previous_flow_active_id) != int(active_worksheet_id)
     and not _preserve_matching_price_page
+    and not _preserve_arrow_navigation_target
 ):
     st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = (
         _worksheet_page_flow_token(
@@ -13391,7 +15348,7 @@ if "connection_transport_settings" not in st.session_state:
 if "inline_flow_meter_settings" not in st.session_state:
     st.session_state["inline_flow_meter_settings"] = {}
 
-left_col, center_col = st.columns([1.05, 2.06], gap="small")
+left_col, center_col = st.columns([0.80, 2.31], gap="small")
 left_col.markdown('<div class="mobile-left-marker"></div>', unsafe_allow_html=True)
 center_col.markdown('<div class="mobile-center-marker"></div>', unsafe_allow_html=True)
 
@@ -13470,11 +15427,22 @@ with left_col:
     _saved_ppt_paths = _saved_worksheet_ppt_files()
     _saved_ppt_names = [path.name for path in _saved_ppt_paths]
 
+    _saved_project_delete_target = Path(
+        str(st.session_state.get("_saved_project_delete_target", "") or "")
+    ).name
+    if _saved_project_delete_target not in _saved_ppt_names:
+        _saved_project_delete_target = ""
+        st.session_state.pop("_saved_project_delete_target", None)
+
     with st.container(
         key=f"reference_component_heading_bar_{active_worksheet_id}"
     ):
-        _component_heading_col, _saved_ppt_col = st.columns(
-            [0.70, 0.30],
+        (
+            _component_heading_col,
+            _saved_project_delete_col,
+            _saved_ppt_col,
+        ) = st.columns(
+            [0.52, 0.18, 0.30],
             gap="small",
         )
         with _component_heading_col:
@@ -13484,18 +15452,45 @@ with left_col:
                     </div>''',
                 unsafe_allow_html=True,
             )
+        with _saved_project_delete_col:
+            _delete_saved_project_clicked = st.button(
+                "🗑︎",
+                key=f"saved_project_delete_button_{active_worksheet_id}",
+                use_container_width=True,
+                disabled=not bool(_saved_project_delete_target),
+                help=(
+                    f"Delete {_saved_project_delete_target}"
+                    if _saved_project_delete_target
+                    else "Select a saved project first"
+                ),
+            )
         with _saved_ppt_col:
             _selected_saved_ppt = st.selectbox(
                 "Saved worksheet PPT",
                 options=_saved_ppt_names,
                 index=None,
-                placeholder="PPT",
+                placeholder="SAVED",
                 key=f"saved_worksheet_ppt_selector_{active_worksheet_id}",
                 label_visibility="collapsed",
                 disabled=not bool(_saved_ppt_names),
             )
 
+    if _delete_saved_project_clicked and _saved_project_delete_target:
+        _saved_project_deleted, _saved_project_delete_text = (
+            _delete_saved_worksheet_ppt(_saved_project_delete_target)
+        )
+        st.session_state.pop("_saved_project_delete_target", None)
+        st.session_state["_reset_saved_worksheet_ppt_selector"] = True
+        st.session_state["_saved_project_delete_message"] = (
+            bool(_saved_project_deleted),
+            str(_saved_project_delete_text),
+        )
+        st.rerun()
+
     if _selected_saved_ppt:
+        st.session_state["_saved_project_delete_target"] = Path(
+            str(_selected_saved_ppt)
+        ).name
         _saved_ppt_loaded, _saved_ppt_message = _restore_saved_worksheet_ppt(
             _selected_saved_ppt
         )
@@ -13505,6 +15500,19 @@ with left_col:
         )
         st.session_state["_reset_saved_worksheet_ppt_selector"] = True
         st.rerun()
+
+    _saved_project_delete_message = st.session_state.pop(
+        "_saved_project_delete_message",
+        None,
+    )
+    if _saved_project_delete_message:
+        _saved_project_deleted, _saved_project_delete_text = (
+            _saved_project_delete_message
+        )
+        if _saved_project_deleted:
+            st.toast(_saved_project_delete_text, icon="✅")
+        else:
+            st.toast(_saved_project_delete_text, icon="⚠️")
 
     _saved_ppt_load_message = st.session_state.pop(
         "_saved_ppt_load_message",
@@ -13537,17 +15545,12 @@ with left_col:
                     f"{component_index}_{component_tone}"
                 )
             ):
-                code_col, name_col, minus_col, count_col, plus_col, delete_col = st.columns(
-                    [0.14, 0.39, 0.10, 0.12, 0.10, 0.15], gap="small"
+                name_col, minus_col, count_col, plus_col, delete_col = st.columns(
+                    [0.53, 0.10, 0.12, 0.10, 0.15], gap="small"
                 )
-                with code_col:
-                    st.markdown(
-                        f'<div class="reference-component-code {component_tone}">{component_code}</div>',
-                        unsafe_allow_html=True,
-                    )
                 with name_col:
                     st.markdown(
-                        f'<div class="reference-component-name">{component_name}</div>',
+                        f'<div class="reference-component-name {component_tone}">{component_name}</div>',
                         unsafe_allow_html=True,
                     )
                 with minus_col:
@@ -13740,31 +15743,81 @@ with left_col:
             label_visibility="collapsed",
         )
 
-        # Render the selected connection IDs as flat active rows like the reference.
-        for active_connection_id in list(selected_connection_ids):
-            active_connection_label = connection_labels.get(
-                active_connection_id, active_connection_id
+        # Visibility/layout only: when multiple selected connection pills occupy
+        # multiple lines, reserve that exact vertical space in Streamlit's owning
+        # layout element.  The visual selector, active rows and following dropdown
+        # then remain in normal document flow instead of overlapping one another.
+        # No connection state, selection behavior or control functionality changes.
+        if len(selected_connection_ids) >= 2:
+            required_connection_box_height = 40 + (len(selected_connection_ids) - 1) * 36
+            required_connection_key_prefix = (
+                f"st-key-required_connection_compact_{active_worksheet_id}_"
             )
-            active_connection_hash = hashlib.sha256(
-                str(active_connection_id).encode("utf-8")
-            ).hexdigest()[:10]
-            with st.container(
-                key=f"reference_active_connection_row_{active_worksheet_id}_{active_connection_hash}"
-            ):
-                active_label_col, active_delete_col = st.columns([0.88, 0.12], gap="small")
-                with active_label_col:
-                    st.markdown(
-                        f'<div class="reference-active-connection-label">{active_connection_label}</div>',
-                        unsafe_allow_html=True,
-                    )
-                with active_delete_col:
-                    st.button(
-                        "⌫",
-                        key=f"reference_connection_delete_{active_worksheet_id}_{active_connection_hash}",
-                        help="Remove connection",
-                        on_click=_remove_compact_selected_connection,
-                        args=(active_worksheet_id, active_connection_id),
-                    )
+            st.markdown(
+                f"""
+<style>
+/* Required Connections multi-line containment/alignment only. */
+[class*="st-key-reference_connection_section_"]
+[data-testid="stElementContainer"][class*="{required_connection_key_prefix}"],
+[class*="st-key-reference_connection_section_"]
+[data-testid="stElementContainer"]:has([class*="{required_connection_key_prefix}"]),
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"],
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] > div,
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] [data-testid="stMultiSelect"],
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] [data-testid="stMultiSelect"] > div,
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] [data-baseweb="select"],
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] [data-baseweb="select"] > div {{
+    height: {required_connection_box_height}px !important;
+    min-height: {required_connection_box_height}px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}}
+
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] {{
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}}
+
+[class*="st-key-reference_connection_section_"]
+[class*="{required_connection_key_prefix}"] [data-baseweb="select"] > div {{
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-content: flex-start !important;
+    align-items: center !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}}
+
+/* Keep each active green connection row and the following configuration
+   dropdown in their existing normal-flow positions beneath the full box. */
+[class*="st-key-reference_connection_section_"]
+[data-testid="stElementContainer"]:has([class*="st-key-reference_active_connection_row_"]),
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-reference_active_connection_row_"] {{
+    position: relative !important;
+    z-index: 1 !important;
+    overflow: visible !important;
+}}
+
+[class*="st-key-reference_connection_section_"]
+[class*="st-key-connection_config_target_"] {{
+    position: relative !important;
+    z-index: 1 !important;
+    clear: both !important;
+    margin-top: 8px !important;
+}}
+</style>
+                """,
+                unsafe_allow_html=True,
+            )
 
         # The existing second 2A box now always contains both:
         #   - the current valid instance-level connections, and
@@ -14144,20 +16197,23 @@ with center_col:
         )
 
     with worksheet_col:
-        worksheet_event = _worksheet_dropdown(
-            worksheets=[
-                {"id": int(sheet["id"]), "name": str(sheet["name"])}
-                for sheet in worksheets
-            ],
-            selected_id=int(
-                st.session_state.get(
-                    "active_worksheet_id",
-                    active_sheet_for_controls["id"],
-                )
-            ),
-            key="worksheet_dropdown_double_click_rename",
-            default=None,
-        )
+        worksheet_select_col, save_col = st.columns([0.82, 0.18], gap="small")
+
+        with worksheet_select_col:
+            worksheet_event = _worksheet_dropdown(
+                worksheets=[
+                    {"id": int(sheet["id"]), "name": str(sheet["name"])}
+                    for sheet in worksheets
+                ],
+                selected_id=int(
+                    st.session_state.get(
+                        "active_worksheet_id",
+                        active_sheet_for_controls["id"],
+                    )
+                ),
+                key="worksheet_dropdown_double_click_rename",
+                default=None,
+            )
 
         if isinstance(worksheet_event, dict):
             try:
@@ -14175,50 +16231,133 @@ with center_col:
 
                     if event_worksheet_id in worksheet_ids:
                         if event_type == "select":
-                            # Worksheet-dropdown selection must always land on the
-                            # selected worksheet page itself, never on Welcome Page.
-                            #
-                            # Keep persistence behavior unchanged when the active
-                            # worksheet actually changes, but update the page-flow
-                            # token for every valid dropdown selection. This also
-                            # covers cases where Streamlit has already synchronized
-                            # active_worksheet_id before this component event is
-                            # processed.
-                            if event_worksheet_id != st.session_state.get(
-                                "active_worksheet_id"
-                            ):
-                                persist_active_worksheet_state()
-
-                            st.session_state[
-                                "active_worksheet_id"
-                            ] = event_worksheet_id
-                            st.session_state[
-                                "worksheet_selector"
-                            ] = event_worksheet_id
-
-                            (
-                                _dropdown_flow_page_type,
-                                _dropdown_flow_worksheet_id,
-                            ) = _parse_worksheet_page_flow_token(
+                            # After reopening a saved project, the custom dropdown
+                            # can replay its already-selected worksheet once.  When
+                            # ❮ / ❯ initiated this rerun, do not let that replay
+                            # overwrite the requested Welcome/Worksheet/Price page.
+                            _arrow_target = str(
+                                st.session_state.get(
+                                    "_worksheet_page_flow_navigation_target",
+                                    "",
+                                )
+                                or ""
+                            ).strip().lower()
+                            _current_flow_token = str(
                                 st.session_state.get(
                                     _WORKSHEET_PAGE_FLOW_KEY,
                                     "",
                                 )
+                                or ""
+                            ).strip().lower()
+                            _arrow_target_type, _arrow_target_worksheet_id = (
+                                _parse_worksheet_page_flow_token(_arrow_target)
                             )
-                            _dropdown_is_price_flow_sync = (
-                                _dropdown_flow_page_type == "price"
-                                and _dropdown_flow_worksheet_id
-                                == int(event_worksheet_id)
+                            _expected_arrow_selector_id = (
+                                st.session_state.get(
+                                    "_worksheet_page_flow_navigation_selector_id"
+                                )
+                            )
+                            try:
+                                _expected_arrow_selector_id = int(
+                                    _expected_arrow_selector_id
+                                )
+                            except (TypeError, ValueError):
+                                _expected_arrow_selector_id = None
+
+                            _protect_arrow_navigation = bool(
+                                _arrow_target
+                                and _arrow_target == _current_flow_token
+                                and _expected_arrow_selector_id is not None
+                                and event_worksheet_id
+                                == _expected_arrow_selector_id
+                                and (
+                                    _arrow_target_type == "welcome"
+                                    or _arrow_target_worksheet_id
+                                    == int(
+                                        st.session_state.get(
+                                            "active_worksheet_id",
+                                            event_worksheet_id,
+                                        )
+                                    )
+                                )
                             )
 
-                            if not _dropdown_is_price_flow_sync:
-                                st.session_state[
-                                    _WORKSHEET_PAGE_FLOW_KEY
-                                ] = _worksheet_page_flow_token(
-                                    "worksheet",
-                                    event_worksheet_id,
+                            if _protect_arrow_navigation:
+                                # Consume only the delayed selector event that belongs
+                                # to this arrow click. The next normal selector action
+                                # remains completely unchanged.
+                                st.session_state.pop(
+                                    "_worksheet_page_flow_navigation_target",
+                                    None,
                                 )
-                            st.rerun()
+                                st.session_state.pop(
+                                    "_worksheet_page_flow_navigation_selector_id",
+                                    None,
+                                )
+                                st.session_state.pop(
+                                    "_worksheet_page_flow_navigation_guard_runs",
+                                    None,
+                                )
+                            else:
+                                # Any different selector event is a genuine worksheet
+                                # selection, so discard a stale one-shot arrow guard.
+                                st.session_state.pop(
+                                    "_worksheet_page_flow_navigation_target",
+                                    None,
+                                )
+                                st.session_state.pop(
+                                    "_worksheet_page_flow_navigation_selector_id",
+                                    None,
+                                )
+                                st.session_state.pop(
+                                    "_worksheet_page_flow_navigation_guard_runs",
+                                    None,
+                                )
+
+                                # Worksheet-dropdown selection must always land on the
+                                # selected worksheet page itself, never on Welcome Page.
+                                #
+                                # Keep persistence behavior unchanged when the active
+                                # worksheet actually changes, but update the page-flow
+                                # token for every valid dropdown selection. This also
+                                # covers cases where Streamlit has already synchronized
+                                # active_worksheet_id before this component event is
+                                # processed.
+                                if event_worksheet_id != st.session_state.get(
+                                    "active_worksheet_id"
+                                ):
+                                    persist_active_worksheet_state()
+
+                                st.session_state[
+                                    "active_worksheet_id"
+                                ] = event_worksheet_id
+                                st.session_state[
+                                    "worksheet_selector"
+                                ] = event_worksheet_id
+
+                                (
+                                    _dropdown_flow_page_type,
+                                    _dropdown_flow_worksheet_id,
+                                ) = _parse_worksheet_page_flow_token(
+                                    st.session_state.get(
+                                        _WORKSHEET_PAGE_FLOW_KEY,
+                                        "",
+                                    )
+                                )
+                                _dropdown_is_price_flow_sync = (
+                                    _dropdown_flow_page_type == "price"
+                                    and _dropdown_flow_worksheet_id
+                                    == int(event_worksheet_id)
+                                )
+
+                                if not _dropdown_is_price_flow_sync:
+                                    st.session_state[
+                                        _WORKSHEET_PAGE_FLOW_KEY
+                                    ] = _worksheet_page_flow_token(
+                                        "worksheet",
+                                        event_worksheet_id,
+                                    )
+                                st.rerun()
 
                         elif event_type == "rename":
                             new_name = str(worksheet_event.get("name", "") or "").strip()
@@ -14229,6 +16368,38 @@ with center_col:
             except Exception as exc:
                 log_app_error("Worksheet selection / rename event", exc)
                 show_friendly_error("updating the worksheet")
+
+        with save_col:
+            if st.button(
+                "💾",
+                key=f"save_worksheet_button_{active_worksheet_id}",
+                use_container_width=True,
+                disabled=st.session_state.get("diagram") is None,
+                help="Save current worksheet",
+            ):
+                persist_active_worksheet_state()
+                _sync_pending_worksheet_render_if_needed(active_worksheet_id)
+                _sync_pending_ppt_if_needed(active_worksheet_id)
+                ensure_current_ppt_export()
+                complete_project_ppt = _materialize_complete_project_ppt_for_save()
+                saved_worksheet_path = _save_complete_project_ppt_to_library(
+                    complete_project_ppt
+                    or st.session_state.get("pptx_bytes")
+                    or st.session_state.get("ppt_session_pptx_bytes"),
+                    active_worksheet_id,
+                )
+                if saved_worksheet_path is not None:
+                    # Clear any prior worksheet-only selector value so the next
+                    # rerun shows/reopens the complete-project record just saved.
+                    st.session_state[
+                        "_reset_saved_worksheet_ppt_selector"
+                    ] = True
+                    st.session_state["_show_generated_toolbar_popup"] = (
+                        "Worksheet saved"
+                    )
+                    st.rerun()
+                else:
+                    st.toast("Could not save worksheet", icon="⚠️")
 
     with add_col:
         if st.button(
@@ -14387,10 +16558,19 @@ with center_col:
                 _blank_current_page_token
             )
 
+            _blank_arrow_navigation_target = str(
+                st.session_state.get(
+                    "_worksheet_page_flow_navigation_target",
+                    "",
+                )
+                or ""
+            ).strip().lower()
             if (
                 _blank_current_page_type != "welcome"
                 and _blank_current_page_worksheet_id
                 != int(active_worksheet_id)
+                and _blank_arrow_navigation_target
+                != _blank_current_page_token
             ):
                 _blank_current_page_token = (
                     _worksheet_page_flow_token(
@@ -14429,7 +16609,7 @@ with center_col:
             )
 
             st.button(
-                "<",
+                "❮",
                 key=f"worksheet_page_prev_{active_worksheet_id}",
                 disabled=_blank_current_page_index == 0,
                 help=str(_blank_previous_page["label"]),
@@ -14439,7 +16619,7 @@ with center_col:
                 ),
             )
             st.button(
-                ">",
+                "❯",
                 key=f"worksheet_page_next_{active_worksheet_id}",
                 disabled=(
                     _blank_current_page_index
@@ -14485,10 +16665,19 @@ with center_col:
 
             # If the worksheet dropdown/add/delete changed the active worksheet,
             # show that worksheet page immediately while keeping Welcome global.
+            _current_arrow_navigation_target = str(
+                st.session_state.get(
+                    "_worksheet_page_flow_navigation_target",
+                    "",
+                )
+                or ""
+            ).strip().lower()
             if (
                 current_page_type != "welcome"
                 and current_page_worksheet_id
                 != int(active_worksheet_id)
+                and _current_arrow_navigation_target
+                != current_page_token
             ):
                 current_page_token = _worksheet_page_flow_token(
                     "worksheet",
@@ -14518,7 +16707,7 @@ with center_col:
             # Only the targets now follow the required worksheet-wise sequence:
             # Welcome -> Worksheet 1 -> Price 1 -> Worksheet 2 -> Price 2 -> ...
             st.button(
-                "<",
+                "❮",
                 key=f"worksheet_page_prev_{active_worksheet_id}",
                 disabled=current_page_index == 0,
                 help=str(previous_page["label"]),
@@ -14526,7 +16715,7 @@ with center_col:
                 args=(str(previous_page["token"]),),
             )
             st.button(
-                ">",
+                "❯",
                 key=f"worksheet_page_next_{active_worksheet_id}",
                 disabled=current_page_index == len(page_sequence) - 1,
                 help=str(next_page["label"]),
@@ -14630,6 +16819,117 @@ with center_col:
                 _render_blank_worksheet_structure(
                     int(active_worksheet_id)
                 )
+
+# Keep the one-shot arrow-navigation guard alive for one additional rerun so a
+# delayed worksheet-dropdown event cannot undo the first ❮ / ❯ click after a
+# saved project is reopened. The matching dropdown event consumes it earlier.
+try:
+    _arrow_guard_runs_remaining = int(
+        st.session_state.get(
+            "_worksheet_page_flow_navigation_guard_runs",
+            0,
+        )
+        or 0
+    )
+except (TypeError, ValueError):
+    _arrow_guard_runs_remaining = 0
+
+if _arrow_guard_runs_remaining > 1:
+    st.session_state[
+        "_worksheet_page_flow_navigation_guard_runs"
+    ] = _arrow_guard_runs_remaining - 1
+elif _arrow_guard_runs_remaining == 1:
+    st.session_state.pop(
+        "_worksheet_page_flow_navigation_target",
+        None,
+    )
+    st.session_state.pop(
+        "_worksheet_page_flow_navigation_selector_id",
+        None,
+    )
+    st.session_state.pop(
+        "_worksheet_page_flow_navigation_guard_runs",
+        None,
+    )
+
+
+# Bottom-right project slide counter/navigation only.
+# Reuses the existing page-flow sequence and navigation callback so a single
+# click follows the exact same Welcome -> Worksheet -> Price Details order.
+_project_slide_sequence = _worksheet_page_flow_sequence()
+_project_slide_tokens = [
+    str(item.get("token", "") or "").strip().lower()
+    for item in _project_slide_sequence
+]
+_project_slide_token = str(
+    st.session_state.get(
+        _WORKSHEET_PAGE_FLOW_KEY,
+        _worksheet_page_flow_token(
+            "worksheet",
+            st.session_state.get("active_worksheet_id", 1),
+        ),
+    )
+    or ""
+).strip().lower()
+
+if _project_slide_token not in _project_slide_tokens:
+    _project_slide_token = _worksheet_page_flow_token(
+        "worksheet",
+        st.session_state.get("active_worksheet_id", 1),
+    )
+    if _project_slide_token not in _project_slide_tokens:
+        _project_slide_token = (
+            _project_slide_tokens[0]
+            if _project_slide_tokens
+            else "welcome"
+        )
+
+_project_slide_index = (
+    _project_slide_tokens.index(_project_slide_token)
+    if _project_slide_token in _project_slide_tokens
+    else 0
+)
+_project_slide_total = max(1, len(_project_slide_sequence))
+_project_slide_previous = (
+    _project_slide_sequence[_project_slide_index - 1]
+    if _project_slide_index > 0
+    else _project_slide_sequence[_project_slide_index]
+)
+_project_slide_next = (
+    _project_slide_sequence[_project_slide_index + 1]
+    if _project_slide_index < len(_project_slide_sequence) - 1
+    else _project_slide_sequence[_project_slide_index]
+)
+
+with st.container(key="project_slide_navigation"):
+    _slide_prev_col, _slide_count_col, _slide_next_col = st.columns(
+        [0.65, 2.2, 0.65],
+        gap="small",
+        vertical_alignment="center",
+    )
+    with _slide_prev_col:
+        st.button(
+            "<",
+            key="project_slide_nav_prev",
+            disabled=_project_slide_index == 0,
+            help=str(_project_slide_previous.get("label", "Previous slide")),
+            on_click=_navigate_worksheet_page_flow,
+            args=(str(_project_slide_previous.get("token", "welcome")),),
+        )
+    with _slide_count_col:
+        st.markdown(
+            f'<div class="project-slide-counter">Slide {_project_slide_index + 1}/{_project_slide_total}</div>',
+            unsafe_allow_html=True,
+        )
+    with _slide_next_col:
+        st.button(
+            ">",
+            key="project_slide_nav_next",
+            disabled=_project_slide_index == len(_project_slide_sequence) - 1,
+            help=str(_project_slide_next.get("label", "Next slide")),
+            on_click=_navigate_worksheet_page_flow,
+            args=(str(_project_slide_next.get("token", "welcome")),),
+        )
 
 
 # =============================================================================
