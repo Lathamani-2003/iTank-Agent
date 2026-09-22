@@ -786,40 +786,144 @@ hr { border-color:#dbe8f7 !important; }
     right:20px !important;
     bottom:42px !important;
     z-index:999997 !important;
-    width:190px !important;
+    width:max-content !important;
+    max-width:calc(100vw - 40px) !important;
     margin:0 !important;
     padding:0 !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
 }
 .st-key-project_slide_navigation [data-testid="stHorizontalBlock"] {
     align-items:center !important;
-    gap:6px !important;
+    gap:1px !important;
+    flex-wrap:nowrap !important;
+    width:max-content !important;
+    min-width:max-content !important;
+    justify-content:flex-start !important;
 }
 .st-key-project_slide_navigation [data-testid="column"] {
+    box-sizing:border-box !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex-shrink:0 !important;
     padding:0 !important;
+    width:20px !important;
+    min-width:20px !important;
+    max-width:20px !important;
+    flex:0 0 20px !important;
 }
 .st-key-project_slide_navigation .stButton {
+    box-sizing:border-box !important;
+    flex:0 0 20px !important;
+    width:20px !important;
     margin:0 !important;
     padding:0 !important;
+    overflow:visible !important;
 }
 .st-key-project_slide_navigation .stButton > button {
-    min-height:30px !important;
-    height:30px !important;
-    width:30px !important;
+    min-height:20px !important;
+    height:20px !important;
+    width:20px !important;
+    min-width:20px !important;
+    max-width:20px !important;
+    padding:0 1px !important;
+    border:0 !important;
+    border-radius:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    color:#0a4f8f !important;
+    font-size:13px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+}
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_prev"] button,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_next"] button {
+    border:0 !important;
+    outline:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    color:#0a4f8f !important;
+    font-size:14px !important;
+    font-weight:700 !important;
     padding:0 !important;
-    border-radius:7px !important;
-    font-size:18px !important;
+}
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_prev"] button:hover,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_prev"] button:focus,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_prev"] button:active,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_next"] button:hover,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_next"] button:focus,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_next"] button:active {
+    border:0 !important;
+    outline:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    color:#06457f !important;
+}
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button {
+    min-height:16px !important;
+    height:16px !important;
+    width:16px !important;
+    min-width:16px !important;
+    max-width:16px !important;
+    margin:0 auto !important;
+    padding:0 !important;
+    font-size:9px !important;
+    font-weight:600 !important;
+    font-family:"Segoe UI", sans-serif !important;
+    letter-spacing:0 !important;
+    background:transparent !important;
+    border:0 !important;
+    color:#58708b !important;
+    text-decoration:none !important;
+    white-space:nowrap !important;
+    transition:color 120ms ease, opacity 120ms ease !important;
+}
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button:hover,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button:focus,
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button:active {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    color:#0a4f8f !important;
+}
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button p {
+    margin:0 !important;
+    padding:0 !important;
     line-height:1 !important;
 }
-.st-key-project_slide_navigation .project-slide-counter {
-    height:30px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    white-space:nowrap;
-    color:#0a4f8f;
-    font-size:13px;
-    font-weight:700;
-    line-height:30px;
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button[kind="primary"] {
+    background:transparent !important;
+    color:#0a4f8f !important;
+    font-weight:700 !important;
+    text-decoration:none !important;
+    text-shadow:0 0 0.01px currentColor !important;
+    position:relative !important;
+}
+.st-key-project_slide_navigation [class*="st-key-project_slide_nav_number_"] button[kind="primary"]::after {
+    content:"" !important;
+    position:absolute !important;
+    left:5px !important;
+    right:5px !important;
+    bottom:1px !important;
+    height:2px !important;
+    border-radius:2px !important;
+    background:#0a4f8f !important;
+}
+.st-key-project_slide_navigation .project-slide-nav-ellipsis {
+    width:20px !important;
+    min-width:20px !important;
+    height:16px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    margin:0 !important;
+    padding:0 !important;
+    color:#8190a2 !important;
+    font-size:9px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
 }
 
 /* Space-efficiency only: preserve the same visual design while reducing page scroll. */
@@ -3746,7 +3850,7 @@ div[data-baseweb="popover"] {
     border-color: #ffe0e3 !important;
 }
 
-/* Saved-project delete icon appearance only. */
+/* Saved-project close icon appearance only. */
 [class*="st-key-saved_project_delete_button_"] button p,
 [class*="st-key-saved_project_delete_button_"] [data-testid^="stBaseButton"] p {
     margin: 0 !important;
@@ -9113,6 +9217,7 @@ def _duplicate_component_instance(active_worksheet_id: int, component_name: str)
 
     selected.append(component_name)
     st.session_state["selected_components"] = selected
+    st.session_state["_manual_component_selection_changed"] = True
 
     new_options = allowed_connection_options(selected)
     new_option_ids = {option.id for option in new_options}
@@ -9177,6 +9282,7 @@ def _decrement_direct_component_instance(
 
     selected.pop(matching_positions[-1])
     st.session_state["selected_components"] = selected
+    st.session_state["_manual_component_selection_changed"] = True
 
     valid_options = allowed_connection_options(selected)
     valid_connection_ids = {option.id for option in valid_options}
@@ -9260,6 +9366,7 @@ def _remove_direct_component_type(
 
     selected = [name for name in selected if name != component_name]
     st.session_state["selected_components"] = selected
+    st.session_state["_manual_component_selection_changed"] = True
 
     # Keep the existing requirement list consistent if a component type is ever
     # shared with the requirement selector in a future catalog revision.
@@ -11752,6 +11859,75 @@ def _saved_ppt_is_complete_project(ppt_path: Path) -> bool:
     return len(saved_project_pages) == 1 + (2 * len(saved_worksheets))
 
 
+def _clear_saved_project_selection(
+    worksheet_id: int,
+    *,
+    reset_loaded_state: bool = False,
+    force_reset: bool = False,
+) -> None:
+    """Clear the active saved project and its loaded in-memory worksheet state."""
+    selector_key = f"saved_worksheet_ppt_selector_{int(worksheet_id)}"
+    if not force_reset and st.session_state.get(selector_key) not in (None, ""):
+        st.session_state.pop("_saved_project_delete_target", None)
+        return
+
+    if not reset_loaded_state:
+        st.session_state["_saved_project_selection_cleared_event"] = True
+        return
+
+    existing_ids: list[int] = []
+    for sheet in list(st.session_state.get("worksheets", []) or []):
+        try:
+            existing_ids.append(int(sheet.get("id")))
+        except (TypeError, ValueError):
+            continue
+
+    for current_id in existing_ids:
+        for state_key in _saved_project_auxiliary_state_keys(current_id):
+            st.session_state.pop(state_key, None)
+        st.session_state.pop(
+            f"_worksheet_render_bundle_cache_{current_id}",
+            None,
+        )
+
+    for state_key in (
+        "_pending_saved_project_restore",
+        "_pending_worksheet_selector",
+        "_pending_deleted_worksheet_ids",
+        "_worksheet_dropdown_last_event",
+        "worksheet_dropdown_double_click_rename",
+        "_worksheet_page_flow_navigation_target",
+        "_saved_project_selection_cleared_event",
+        "_saved_project_delete_target",
+        "_saved_ppt_load_message",
+        "ppt_session_base_bytes",
+        "ppt_session_diagrams",
+        "ppt_session_order",
+        "ppt_session_template_signature",
+        "ppt_session_pptx_bytes",
+        "pptx_bytes",
+    ):
+        st.session_state.pop(state_key, None)
+
+    blank_worksheet = _new_worksheet(1, 1)
+    st.session_state["worksheets"] = [blank_worksheet]
+    st.session_state["active_worksheet_id"] = 1
+    st.session_state["next_worksheet_id"] = 2
+    st.session_state["worksheet_selector"] = 1
+    st.session_state["selected_components"] = []
+    st.session_state["selected_requirement_components"] = []
+    st.session_state["selected_connections"] = []
+    st.session_state["connection_transport_settings"] = {}
+    st.session_state["inline_flow_meter_settings"] = {}
+    st.session_state["_pending_welcome_page_display_name_reset"] = True
+    st.session_state[_WORKSHEET_PAGE_FLOW_KEY] = _worksheet_page_flow_token(
+        "worksheet", 1
+    )
+    st.session_state["_worksheet_page_flow_last_active_id"] = 1
+    st.session_state["_reset_saved_worksheet_ppt_selector"] = True
+    st.session_state.pop("_saved_project_delete_target", None)
+
+
 def _saved_worksheet_ppt_files() -> list[Path]:
     """List saved project records newest first, with legacy fallback only."""
     if not SAVED_WORKSHEET_PPT_DIR.exists():
@@ -13523,24 +13699,24 @@ def ensure_current_ppt_export() -> None:
 
 
 def start_new_ppt_session() -> None:
-    """Reset only PPT session data; worksheet/diagram state remains untouched."""
-    for key in (
-        "ppt_session_base_bytes",
-        "ppt_session_pptx_bytes",
-        "ppt_session_diagrams",
-        "ppt_session_order",
-        "ppt_session_template_signature",
-        "ppt_session_file_mtime_ns",
-        "pptx_bytes",
-    ):
-        st.session_state.pop(key, None)
-
-    try:
-        PPT_SESSION_OUTPUT_PATH.unlink(missing_ok=True)
-    except OSError:
-        pass
-
-    ensure_ppt_session_state()
+    """Save the current project, then open a separate blank PPT workspace."""
+    active_worksheet_id = int(st.session_state.get("active_worksheet_id", 1))
+    persist_active_worksheet_state()
+    _sync_pending_worksheet_render_if_needed(active_worksheet_id)
+    _sync_pending_ppt_if_needed(active_worksheet_id)
+    ensure_current_ppt_export()
+    complete_project_ppt = _materialize_complete_project_ppt_for_save()
+    _save_complete_project_ppt_to_library(
+        complete_project_ppt
+        or st.session_state.get("pptx_bytes")
+        or st.session_state.get("ppt_session_pptx_bytes"),
+        active_worksheet_id,
+    )
+    _clear_saved_project_selection(
+        active_worksheet_id,
+        reset_loaded_state=True,
+        force_reset=True,
+    )
 
 
 def open_current_ppt_for_editing() -> tuple[bool, str]:
@@ -14599,14 +14775,6 @@ def render_fixed_ppt_section(active_worksheet_id: int, *, show_title: bool = Tru
                         key="edit_combined_ppt_disabled",
                     )
 
-            if st.button(
-                "Start New PPT",
-                key="start_new_combined_ppt",
-                use_container_width=True,
-            ):
-                start_new_ppt_session()
-                st.rerun()
-
             _sync_external_ppt_edits_if_any()
             if has_diagrams and st.session_state.get("pptx_bytes"):
                 st.download_button(
@@ -15363,6 +15531,11 @@ with left_col:
     # -------------------------------------------------------------------------
     # Reference-style compact top row. Existing upload/name behavior is unchanged.
     # -------------------------------------------------------------------------
+    if st.session_state.pop(
+        "_pending_welcome_page_display_name_reset",
+        False,
+    ):
+        st.session_state["welcome_page_display_name"] = ""
     if "welcome_page_display_name" not in st.session_state:
         st.session_state["welcome_page_display_name"] = ""
 
@@ -15424,6 +15597,20 @@ with left_col:
             ):
                 st.session_state.pop(_saved_selector_key, None)
 
+    _saved_selector_key = f"saved_worksheet_ppt_selector_{active_worksheet_id}"
+    _saved_project_selection_was_cleared = (
+        not _reset_saved_ppt_selector
+        and _saved_selector_key in st.session_state
+        and st.session_state.get(_saved_selector_key) in (None, "")
+        and bool(st.session_state.get("_saved_project_delete_target"))
+    )
+    if _saved_project_selection_was_cleared:
+        _clear_saved_project_selection(
+            active_worksheet_id,
+            reset_loaded_state=True,
+        )
+        st.rerun()
+
     _saved_ppt_paths = _saved_worksheet_ppt_files()
     _saved_ppt_names = [path.name for path in _saved_ppt_paths]
 
@@ -15454,12 +15641,12 @@ with left_col:
             )
         with _saved_project_delete_col:
             _delete_saved_project_clicked = st.button(
-                "🗑︎",
+                "🗑",
                 key=f"saved_project_delete_button_{active_worksheet_id}",
                 use_container_width=True,
                 disabled=not bool(_saved_project_delete_target),
                 help=(
-                    f"Delete {_saved_project_delete_target}"
+                    f"Delete {_saved_project_delete_target} permanently"
                     if _saved_project_delete_target
                     else "Select a saved project first"
                 ),
@@ -15471,19 +15658,15 @@ with left_col:
                 index=None,
                 placeholder="SAVED",
                 key=f"saved_worksheet_ppt_selector_{active_worksheet_id}",
+                on_change=_clear_saved_project_selection,
+                args=(active_worksheet_id,),
                 label_visibility="collapsed",
                 disabled=not bool(_saved_ppt_names),
             )
 
     if _delete_saved_project_clicked and _saved_project_delete_target:
-        _saved_project_deleted, _saved_project_delete_text = (
-            _delete_saved_worksheet_ppt(_saved_project_delete_target)
-        )
-        st.session_state.pop("_saved_project_delete_target", None)
-        st.session_state["_reset_saved_worksheet_ppt_selector"] = True
-        st.session_state["_saved_project_delete_message"] = (
-            bool(_saved_project_deleted),
-            str(_saved_project_delete_text),
+        st.session_state["_pending_saved_project_delete_confirm"] = (
+            _saved_project_delete_target
         )
         st.rerun()
 
@@ -15583,11 +15766,18 @@ with left_col:
                     )
 
     # Keep the same manual-component source of truth used by the existing flow.
-    selected_components = []
-    for component_name in manual_component_names:
-        selected_components.extend(
-            [component_name] * max(0, int(current_counts.get(component_name, 0)))
+    # Preserve a direct button callback's canonical list before rebuilding the
+    # compact manual-component projection for an ordinary rerun.
+    if st.session_state.pop("_manual_component_selection_changed", False):
+        selected_components = list(
+            st.session_state.get("selected_components", []) or []
         )
+    else:
+        selected_components = []
+        for component_name in manual_component_names:
+            selected_components.extend(
+                [component_name] * max(0, int(current_counts.get(component_name, 0)))
+            )
 
     if list(st.session_state.get("selected_components", []) or []) != selected_components:
         st.session_state["selected_components"] = list(selected_components)
@@ -16183,12 +16373,16 @@ with center_col:
         title_col,
         worksheet_col,
         add_col,
+        start_new_col,
         delete_col,
         ppt_col,
         zoom_in_col,
         edit_col,
         download_col,
-    ) = st.columns([0.23, 0.29, 0.045, 0.055, 0.055, 0.05, 0.075, 0.15], gap="small")
+    ) = st.columns(
+        [0.23, 0.29, 0.045, 0.12, 0.055, 0.055, 0.05, 0.075, 0.15],
+        gap="small",
+    )
 
     with title_col:
         st.markdown(
@@ -16410,6 +16604,16 @@ with center_col:
             persist_active_worksheet_state()
             add_worksheet()
             st.session_state["_show_add_worksheet_popup"] = True
+            st.rerun()
+
+    with start_new_col:
+        if st.button(
+            "Start New PPT",
+            key="start_new_combined_ppt",
+            use_container_width=True,
+            help="Save the current project and open a separate blank PPT workspace",
+        ):
+            start_new_ppt_session()
             st.rerun()
 
     with delete_col:
@@ -16900,13 +17104,26 @@ _project_slide_next = (
     if _project_slide_index < len(_project_slide_sequence) - 1
     else _project_slide_sequence[_project_slide_index]
 )
+_project_has_hidden_slide_pages = _project_slide_total > 5
+_project_visible_slide_entries = [
+    (slide_index + 1, slide_page)
+    for slide_index, slide_page in enumerate(_project_slide_sequence[:5])
+]
 
 with st.container(key="project_slide_navigation"):
-    _slide_prev_col, _slide_count_col, _slide_next_col = st.columns(
-        [0.65, 2.2, 0.65],
+    _slide_navigation_columns = st.columns(
+        (
+            [0.9]
+            + [1.0] * len(_project_visible_slide_entries)
+            + ([1.0] if _project_has_hidden_slide_pages else [])
+            + [0.9]
+        ),
         gap="small",
         vertical_alignment="center",
     )
+    _slide_prev_col = _slide_navigation_columns[0]
+    _slide_number_columns = _slide_navigation_columns[1:-1]
+    _slide_next_col = _slide_navigation_columns[-1]
     with _slide_prev_col:
         st.button(
             "<",
@@ -16916,11 +17133,31 @@ with st.container(key="project_slide_navigation"):
             on_click=_navigate_worksheet_page_flow,
             args=(str(_project_slide_previous.get("token", "welcome")),),
         )
-    with _slide_count_col:
-        st.markdown(
-            f'<div class="project-slide-counter">Slide {_project_slide_index + 1}/{_project_slide_total}</div>',
-            unsafe_allow_html=True,
-        )
+    for _slide_number_col, (_slide_number, _slide_page) in zip(
+        _slide_number_columns[:5],
+        _project_visible_slide_entries[:5],
+    ):
+        with _slide_number_col:
+            st.button(
+                str(_slide_number),
+                key=f"project_slide_nav_number_{_slide_number}",
+                use_container_width=True,
+                type=(
+                    "primary"
+                    if _slide_number - 1 == _project_slide_index
+                    else "secondary"
+                ),
+                help=str(_slide_page.get("label", f"Slide {_slide_number}")),
+                on_click=_navigate_worksheet_page_flow,
+                args=(str(_slide_page.get("token", "welcome")),),
+            )
+    if _project_has_hidden_slide_pages:
+        _ellipsis_column_index = 5
+        with _slide_number_columns[_ellipsis_column_index]:
+            st.markdown(
+                '<div class="project-slide-nav-ellipsis">...</div>',
+                unsafe_allow_html=True,
+            )
     with _slide_next_col:
         st.button(
             ">",
