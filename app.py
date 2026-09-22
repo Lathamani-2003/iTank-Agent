@@ -7425,7 +7425,7 @@ def _component_dropdown_image_uri(component_name: str) -> str:
         "Transmitter": ["Transmitter.png.png", "Transmitter.png"],
         "Repeater": ["Repeater.png.png", "Repeater.png"],
         "Display with GSM (DWG)": ["DWG.png.png", "DWG.png"],
-        "Linear Level Sensor (LLS)": ["LLS.png.png", "LLS.png"],
+        "Linear Level Sensor (LLS)": ["LLS.png"],
         "Motorized Valve (MV)": ["Motorized Valve.png.png", "Motorized Valve.png"],
         "Pressure Relief Valve (PRV)": ["PRV.png.png", "PRV.png"],
         "Non-Return Valve (NRV)": ["NRV.png.png", "NRV.png"],
@@ -9566,6 +9566,64 @@ def _delete_component_instance(
     return True
 
 
+def _apply_connection_delete_state(worksheet_id: int, edge_id: str, diagram) -> bool:
+    """Remove one connection before any same-rerun diagram generation occurs."""
+    edge_id = str(edge_id or "").strip()
+    if not edge_id or diagram is None or not hasattr(diagram, "edges"):
+        return False
+
+    valid_edge_ids = {
+        str(getattr(edge, "id", "") or "")
+        for edge in (getattr(diagram, "edges", []) or [])
+    }
+    if edge_id not in valid_edge_ids:
+        return False
+
+    diagram.edges = [
+        edge
+        for edge in list(getattr(diagram, "edges", []) or [])
+        if str(getattr(edge, "id", "") or "") != edge_id
+    ]
+
+    option_id = edge_id.removeprefix("edge__")
+    st.session_state["selected_connections"] = [
+        connection_id
+        for connection_id in list(
+            st.session_state.get("selected_connections", []) or []
+        )
+        if str(connection_id) not in {edge_id, option_id}
+    ]
+
+    deleted_ids = {
+        str(value)
+        for value in st.session_state.get(
+            _deleted_connection_ids_key(worksheet_id), []
+        )
+        or []
+    }
+    deleted_ids.update({edge_id, option_id})
+    st.session_state[_deleted_connection_ids_key(worksheet_id)] = sorted(
+        deleted_ids
+    )
+
+    transport_settings = dict(
+        st.session_state.get("connection_transport_settings", {}) or {}
+    )
+    transport_settings.pop(option_id, None)
+    transport_settings.pop(edge_id, None)
+    st.session_state["connection_transport_settings"] = transport_settings
+
+    overrides_key = _manual_connection_overrides_key(worksheet_id)
+    route_overrides = dict(st.session_state.get(overrides_key, {}) or {})
+    route_overrides.pop(edge_id, None)
+    st.session_state[overrides_key] = route_overrides
+    st.session_state.pop(_manual_edit_png_key(worksheet_id), None)
+    persist_active_worksheet_state()
+    _mark_worksheet_render_sync_pending(worksheet_id)
+    _mark_ppt_sync_pending(worksheet_id)
+    return True
+
+
 def _consume_pending_normal_surface_component_action(worksheet_id: int) -> bool:
     """Apply Worksheet +/- events before the expensive page/render pipeline.
 
@@ -9584,7 +9642,11 @@ def _consume_pending_normal_surface_component_action(worksheet_id: int) -> bool:
         return False
 
     event_type = str(event.get("type", "") or "")
-    if event_type not in {"component_add", "component_delete"}:
+    if event_type not in {
+        "component_add",
+        "component_delete",
+        "connection_delete",
+    }:
         return False
 
     event_id = str(event.get("event_id", "") or "")
@@ -9598,6 +9660,13 @@ def _consume_pending_normal_surface_component_action(worksheet_id: int) -> bool:
     # Mark before the normal Worksheet component is mounted later in this run,
     # so the same event is not processed again at the original call site.
     st.session_state[last_key] = event_id
+
+    if event_type == "connection_delete":
+        return _apply_connection_delete_state(
+            worksheet_id,
+            str(event.get("edge_id", "") or ""),
+            st.session_state.get("diagram"),
+        )
 
     if event_type == "component_add":
         component_name = str(event.get("component", "") or "").strip()
@@ -10157,6 +10226,13 @@ def _render_normal_diagram_preview(preview_png: bytes, diagram, worksheet_id: in
         if isinstance(item, dict)
     }
 
+    for item in list(normal_components or []):
+        if not isinstance(item, dict):
+            continue
+        override = component_overrides.get(str(item.get("instance_id", "") or ""), {})
+        if isinstance(override, dict) and str(override.get("title", "") or "").strip():
+            item["title"] = str(override["title"]).strip()
+
     def _valid_component_box(value) -> bool:
         if not isinstance(value, (list, tuple)) or len(value) != 4:
             return False
@@ -10532,12 +10608,25 @@ def _render_normal_diagram_preview(preview_png: bytes, diagram, worksheet_id: in
             repr(saved_editor_state).encode("utf-8")
         ).hexdigest()
 
+    lls_asset_revision = ""
+    try:
+        lls_asset_path = _manual_asset_for_component("Linear Level Sensor (LLS)")
+        if lls_asset_path is not None and Path(lls_asset_path).is_file():
+            lls_asset_stat = Path(lls_asset_path).stat()
+            lls_asset_revision = (
+                f"{Path(lls_asset_path).name}:"
+                f"{int(lls_asset_stat.st_mtime_ns)}:"
+                f"{int(lls_asset_stat.st_size)}"
+            )
+    except Exception:
+        lls_asset_revision = ""
+
     normal_render_revision = hashlib.sha256(
         (
             f"component-visibility-protected-v4|"
             f"{_worksheet_render_bundle_key(diagram, worksheet_id, route_overrides, component_overrides)}|"
             f"{view_key}|{pending_source_id or ''}|{int(wireless_active_for_worksheet)}|"
-            f"{worksheet_display_name}|"
+            f"{worksheet_display_name}|{lls_asset_revision}|"
             f"{canvas_width:.8f}|{canvas_height:.8f}|{saved_editor_signature}"
         ).encode("utf-8")
     ).hexdigest()
@@ -10589,14 +10678,54 @@ def _render_normal_diagram_preview(preview_png: bytes, diagram, worksheet_id: in
             for edge in (getattr(diagram, "edges", []) or [])
         }
         if edge_id in valid_edge_ids:
+            # Remove the exact edge from the current worksheet diagram first.
+            # The live renderer and delayed rerenders must no longer have this
+            # connection in their source graph; a visual hidden override alone
+            # can be discarded by the normal generation path.
+            if diagram is not None and hasattr(diagram, "edges"):
+                diagram.edges = [
+                    edge
+                    for edge in list(getattr(diagram, "edges", []) or [])
+                    if str(getattr(edge, "id", "") or "") != edge_id
+                ]
+
             overrides_key = _manual_connection_overrides_key(worksheet_id)
             route_overrides = dict(
                 st.session_state.get(overrides_key, {}) or {}
             )
-            existing_route = dict(route_overrides.get(edge_id, {}) or {})
-            existing_route["hidden"] = True
-            route_overrides[edge_id] = existing_route
+            route_overrides.pop(edge_id, None)
             st.session_state[overrides_key] = route_overrides
+
+            # Remove the logical selection as well as hiding the current visual
+            # route. Otherwise the next worksheet render regenerates the same
+            # selected connection from the catalog before the visual override is
+            # reapplied. A future manual click can add this connection again.
+            option_id = edge_id.removeprefix("edge__")
+            selected_connections = list(
+                st.session_state.get("selected_connections", []) or []
+            )
+            st.session_state["selected_connections"] = [
+                connection_id
+                for connection_id in selected_connections
+                if str(connection_id) not in {edge_id, option_id}
+            ]
+            deleted_ids = {
+                str(value)
+                for value in st.session_state.get(
+                    _deleted_connection_ids_key(worksheet_id), []
+                )
+                or []
+            }
+            deleted_ids.update({edge_id, option_id})
+            st.session_state[_deleted_connection_ids_key(worksheet_id)] = sorted(
+                deleted_ids
+            )
+            transport_settings = dict(
+                st.session_state.get("connection_transport_settings", {}) or {}
+            )
+            transport_settings.pop(option_id, None)
+            transport_settings.pop(edge_id, None)
+            st.session_state["connection_transport_settings"] = transport_settings
 
             # Performance only: the browser already applied the visual delete.
             # Persist the same override and defer export-quality raster/PDF/PPT
@@ -10711,6 +10840,30 @@ def _render_normal_diagram_preview(preview_png: bytes, diagram, worksheet_id: in
                 _mark_ppt_sync_pending(worksheet_id)
         return
 
+    if event_type == "component_label_edit":
+        instance_id = str(event.get("instance_id", "") or "").strip()
+        title = str(event.get("title", "") or "").strip()
+        valid_node_ids = {
+            str(getattr(node, "id", "") or "")
+            for node in (getattr(diagram, "nodes", []) or [])
+        }
+        if instance_id in valid_node_ids and title:
+            component_overrides = dict(
+                st.session_state.get(
+                    _manual_component_overrides_key(worksheet_id), {}
+                )
+                or {}
+            )
+            existing = dict(component_overrides.get(instance_id, {}) or {})
+            existing["title"] = title
+            component_overrides[instance_id] = existing
+            st.session_state[_manual_component_overrides_key(worksheet_id)] = component_overrides
+            st.session_state.pop(_manual_edit_png_key(worksheet_id), None)
+            persist_active_worksheet_state()
+            _mark_worksheet_render_sync_pending(worksheet_id)
+            _mark_ppt_sync_pending(worksheet_id)
+        return
+
     if event_type == "component_add":
         # Compatibility fallback only. Use the same Worksheet +/- state handler
         # as the normal early-consume path.
@@ -10777,6 +10930,20 @@ def _render_normal_diagram_preview(preview_png: bytes, diagram, worksheet_id: in
             # Keep the next pending endpoint without an extra rerun.
             return
 
+        deleted_ids = {
+            str(value)
+            for value in st.session_state.get(
+                _deleted_connection_ids_key(worksheet_id), []
+            )
+            or []
+        }
+        deleted_ids.difference_update(
+            {str(matching_option.id), f"edge__{matching_option.id}"}
+        )
+        st.session_state[_deleted_connection_ids_key(worksheet_id)] = sorted(
+            deleted_ids
+        )
+
         # If this exact automatically-generated relationship was manually deleted,
         # choosing the same two components recreates only that connection.  Remove
         # only its hidden visual override; all other routes/components remain intact.
@@ -10794,6 +10961,9 @@ def _render_normal_diagram_preview(preview_png: bytes, diagram, worksheet_id: in
                 } == {first_id, clicked_id}
             ),
             "",
+        )
+        matching_diagram_edge_id = matching_diagram_edge_id or (
+            f"edge__{matching_option.id}"
         )
         hidden_route = dict(
             route_overrides.get(matching_diagram_edge_id, {}) or {}
@@ -11048,6 +11218,10 @@ def _manual_edit_signature_key(worksheet_id: int) -> str:
 
 def _manual_connection_overrides_key(worksheet_id: int) -> str:
     return f"manual_connection_overrides_{int(worksheet_id)}"
+
+
+def _deleted_connection_ids_key(worksheet_id: int) -> str:
+    return f"deleted_connection_ids_{int(worksheet_id)}"
 
 
 def _manual_component_overrides_key(worksheet_id: int) -> str:
@@ -12001,6 +12175,7 @@ def _saved_project_auxiliary_state_keys(worksheet_id: int) -> tuple[str, ...]:
         _manual_edit_png_key(worksheet_id),
         _manual_edit_signature_key(worksheet_id),
         _manual_connection_overrides_key(worksheet_id),
+        _deleted_connection_ids_key(worksheet_id),
         _manual_component_overrides_key(worksheet_id),
         _manual_connection_source_key(worksheet_id),
         _active_connection_transport_key(worksheet_id),
@@ -14392,6 +14567,13 @@ def generate_selected_components(
 ) -> None:
     """Build the selected diagram, auto-expanding wireless communication components."""
     worksheet_id = int(get_active_worksheet()["id"])
+    deleted_connection_ids = {
+        str(value)
+        for value in st.session_state.get(
+            _deleted_connection_ids_key(worksheet_id), []
+        )
+        or []
+    }
     auto_component_key = f"_auto_wireless_components_{worksheet_id}"
     requested_auto_component_key = f"_auto_requested_connection_components_{worksheet_id}"
     trained_requirement_component_key = (
@@ -14624,6 +14806,12 @@ def generate_selected_components(
         + list(trained_requirement_connection_ids or [])
         + list(auto_water_connection_ids or []),
     )
+    merged_connection_ids = [
+        connection_id
+        for connection_id in merged_connection_ids
+        if str(connection_id) not in deleted_connection_ids
+        and f"edge__{connection_id}" not in deleted_connection_ids
+    ]
 
     # Persist communication expansion only when the strict condition succeeds.
     # Also persist cleanup when a previously auto-generated chain is no longer
@@ -14669,6 +14857,12 @@ def generate_selected_components(
         expanded_components,
         merged_connection_ids,
     )
+    merged_connection_ids = [
+        connection_id
+        for connection_id in merged_connection_ids
+        if str(connection_id) not in deleted_connection_ids
+        and f"edge__{connection_id}" not in deleted_connection_ids
+    ]
 
     diagram = _cached_build_selected_component_diagram(
         tuple(str(name) for name in expanded_components),

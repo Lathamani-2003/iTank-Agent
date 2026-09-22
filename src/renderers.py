@@ -539,7 +539,7 @@ ASSET_CANDIDATES = {
         "valve_real.png", "valve.jpeg", "valve.jpg", "valve.png",
     ],
     "sensor": [
-        "lls.jpeg", "flowmeter.png", "sensor_real.jpeg", "sensor_real.jpg",
+        "LLS.png", "flowmeter.png", "sensor_real.jpeg", "sensor_real.jpg",
         "sensor_real.png", "sensor.jpeg", "sensor.jpg", "sensor.png",
     ],
     "controller": [
@@ -3293,6 +3293,12 @@ def _selection_mode_port_plan(diagram: DiagramSpec, boxes):
     fractions: dict[tuple[str, int, str, str], float] = {}
     totals: dict[tuple[str, int, str, str], tuple[int, int]] = {}
     all_sides = ("top", "bottom", "left", "right")
+    node_types = {
+        str(getattr(node, "id", "") or ""): str(
+            getattr(node, "node_type", "") or ""
+        )
+        for node in (getattr(diagram, "nodes", []) or [])
+    }
 
     def center_port(box, side: str):
         return _port_point(box, side, 0, 1, 0.5)
@@ -3402,6 +3408,31 @@ def _selection_mode_port_plan(diagram: DiagramSpec, boxes):
         source_box = boxes.get(edge.source)
         target_box = boxes.get(edge.target)
         if source_box is None or target_box is None:
+            continue
+
+        # Tank interconnections are the one intentional exception to the
+        # generic facing-side planner: both endpoints must remain on the tank
+        # bottoms, matching the authored tank-to-tank connection layout.
+        if (
+            str(getattr(edge, "label", "") or "") == "Tank Inter-Connection"
+            and node_types.get(str(edge.source), "") == "oht"
+            and node_types.get(str(edge.target), "") == "oht"
+        ):
+            side_info[edge_index] = ("bottom", "bottom")
+            source_key = ("source", edge_index, edge.source, "bottom")
+            target_key = ("target", edge_index, edge.target, "bottom")
+            fractions[source_key] = 0.20
+            fractions[target_key] = 0.80
+            totals[source_key] = (0, 1)
+            totals[target_key] = (0, 1)
+            used_sides.setdefault(edge.source, set()).add("bottom")
+            used_sides.setdefault(edge.target, set()).add("bottom")
+            side_use_count[(edge.source, "bottom")] = side_use_count.get(
+                (edge.source, "bottom"), 0
+            ) + 1
+            side_use_count[(edge.target, "bottom")] = side_use_count.get(
+                (edge.target, "bottom"), 0
+            ) + 1
             continue
 
         source_rank = side_rank_for_vector(source_box, target_box)

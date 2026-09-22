@@ -365,7 +365,7 @@ EXACT_ASSET_BY_COMPONENT = {
     "Display (D)": "display.png",
     "Auto Change Over Unit": "auto_change_over.png",
     "Motor (Pump)": "motor.png",
-    "Linear Level Sensor (LLS)": "lls.jpeg",
+    "Linear Level Sensor (LLS)": "LLS.png",
     "Motorized Valve (MV)": "mv.png",
     "Pressure Relief Valve (PRV)": "prv.png",
     "Non-Return Valve (NRV)": "nrv.png",
@@ -934,9 +934,9 @@ def _planned_connection_options_cached(
 
     # Tank Inter-Connection -------------------------------------------------
     # Any selected component whose catalog node_type is ``oht`` participates.
-    # Adjacent tanks are linked as one bidirectional equalisation chain:
-    # Tank 1 <-> Tank 2 <-> Tank 3 ... .  The rule metadata carries the exact
-    # bottom-port policy; the universal router remains component-independent.
+    # Every distinct tank pair can be selected as a bidirectional equalisation
+    # link. The rule metadata carries the exact bottom-port policy; the
+    # universal router remains component-independent.
     tank_instances = sorted(
         [instance for instance in instances if instance.definition.node_type == "oht"],
         key=lambda instance: (
@@ -946,37 +946,35 @@ def _planned_connection_options_cached(
         ),
     )
     if len(tank_instances) >= 2:
-        for chain_index, (source_instance, target_instance) in enumerate(
-            zip(tank_instances, tank_instances[1:]),
-            start=1,
-        ):
-            option_id = (
-                f"tank_interconnection__{source_instance.node_id}__"
-                f"link__{target_instance.node_id}"
-            )
-            if option_id in seen_ids:
-                continue
-            seen_ids.add(option_id)
+        for source_index, source_instance in enumerate(tank_instances):
+            for target_instance in tank_instances[source_index + 1:]:
+                option_id = (
+                    f"tank_interconnection__{source_instance.node_id}__"
+                    f"link__{target_instance.node_id}"
+                )
+                if option_id in seen_ids:
+                    continue
+                seen_ids.add(option_id)
 
-            rule = AllowedConnectionRule(
-                source=source_instance.definition.name,
-                target=target_instance.definition.name,
-                label="Tank Inter-Connection",
-                bidirectional=True,
-                pairing="adjacent_chain",
-                channel="process",
-            )
-            option = ConnectionOption(
-                id=option_id,
-                source_id=source_instance.node_id,
-                target_id=target_instance.node_id,
-                source_label=source_instance.label,
-                target_label=target_instance.label,
-                connection_label="Tank Inter-Connection",
-                direction_label="↔",
-                bidirectional=True,
-            )
-            planned.append((option, rule, source_instance, target_instance))
+                rule = AllowedConnectionRule(
+                    source=source_instance.definition.name,
+                    target=target_instance.definition.name,
+                    label="Tank Inter-Connection",
+                    bidirectional=True,
+                    pairing="adjacent_chain",
+                    channel="process",
+                )
+                option = ConnectionOption(
+                    id=option_id,
+                    source_id=source_instance.node_id,
+                    target_id=target_instance.node_id,
+                    source_label=source_instance.label,
+                    target_label=target_instance.label,
+                    connection_label="Tank Inter-Connection",
+                    direction_label="↔",
+                    bidirectional=True,
+                )
+                planned.append((option, rule, source_instance, target_instance))
 
     return tuple(planned)
 

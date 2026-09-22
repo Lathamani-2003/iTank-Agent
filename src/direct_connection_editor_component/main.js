@@ -373,6 +373,7 @@
       hit.addEventListener("pointermove",moveActiveDrag);
       stage.addEventListener("pointermove",moveActiveDrag);
 
+      let suppressComponentClick=false;
       const finish=e=>{
         if(!activeDrag||activeDrag.id!==id||activeDrag.pointerId!==e.pointerId)return;
         e.preventDefault();
@@ -387,21 +388,28 @@
         hit.style.outlineOffset=id===pendingId?"2px":"0";
 
         if(d.moved){
+          suppressComponentClick=true;
           emit("component_move",{
             instance_id:id,
             component:String(c.component||""),
             box:cloneBox(c.box)
           });
         }else{
-          emit("component_select",{
-            instance_id:id,
-            component:String(c.component||"")
-          });
+          // Selection is emitted by the normal click event below.
         }
       };
 
       hit.addEventListener("pointerup",finish);
       stage.addEventListener("pointerup",finish);
+      hit.addEventListener("click",e=>{
+        if(suppressComponentClick){suppressComponentClick=false;return;}
+        e.preventDefault();
+        e.stopPropagation();
+        emit("component_select",{
+          instance_id:id,
+          component:String(c.component||"")
+        });
+      });
       hit.addEventListener("pointercancel",e=>{
         if(!activeDrag||activeDrag.id!==id||activeDrag.pointerId!==e.pointerId)return;
         const d=activeDrag;

@@ -8,6 +8,7 @@
   const cloneBox=b=>Array.isArray(b)&&b.length===4?b.map(Number):[0,0,1,1];
   const eid=()=>`${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`;
   let dragOnlyWindowListeners=[];
+  let dragOnlyRouteAction=null;
 
   // Pointer interaction helpers only. Keep all geometry/routing/rendering logic
   // unchanged while coalescing high-frequency pointermove events to one update
@@ -284,6 +285,89 @@
   function boundaryPoint(box,p){const [x,y,w,h]=box,rx=x+w,by=y+h,px=p[0],py=p[1],cx=clamp(px,x,rx),cy=clamp(py,y,by);const cand=[[Math.abs(px-x),[x,cy]],[Math.abs(px-rx),[rx,cy]],[Math.abs(py-y),[cx,y]],[Math.abs(py-by),[cx,by]]];cand.sort((a,b)=>a[0]-b[0]);return cand[0][1];}
   function sidePort(box,side){const [x,y,w,h]=box;if(side==="left")return[x,y+h/2];if(side==="right")return[x+w,y+h/2];if(side==="top")return[x+w/2,y];return[x+w/2,y+h];}
 
+  function snapBoxToConnectedRoute(activeDrag,box,stage,cw,ch){
+    const rect=stage.getBoundingClientRect();
+    const threshold=Math.max(
+      24/Math.max(1,rect.width)*cw,
+      24/Math.max(1,rect.height)*ch
+    );
+    const [x,y,w,h]=cloneBox(box);
+    const center=[x+(w/2),y+(h/2)];
+    let best=null;
+
+    for(const route of (activeDrag?.attachedRoutes||[])){
+      const edgeId=String(route.edge_id||"");
+      const points=activeDrag.routeBase?.[edgeId];
+      if(!Array.isArray(points)||points.length<2)continue;
+
+      for(let index=0;index<points.length-1;index++){
+        const first=points[index];
+        const second=points[index+1];
+        if(!Array.isArray(first)||!Array.isArray(second))continue;
+        const x1=Number(first[0]),y1=Number(first[1]);
+        const x2=Number(second[0]),y2=Number(second[1]);
+        const horizontal=Math.abs(x2-x1)>=Math.abs(y2-y1);
+        const segmentLength=horizontal?Math.abs(x2-x1):Math.abs(y2-y1);
+        if(!Number.isFinite(segmentLength)||segmentLength<1e-9)continue;
+
+        const segmentStart=horizontal?Math.min(x1,x2):Math.min(y1,y2);
+        const segmentEnd=horizontal?Math.max(x1,x2):Math.max(y1,y2);
+        const projected=horizontal?center[0]:center[1];
+        const closestAlong=clamp(projected,segmentStart,segmentEnd);
+        const axisValue=horizontal?y1:x1;
+        const distance=horizontal
+          ?Math.abs(center[1]-axisValue)
+          :Math.abs(center[0]-axisValue);
+        const distanceAlong=Math.abs(projected-closestAlong);
+        if(distance>threshold||distanceAlong>threshold)continue;
+
+        const snappedCenter=horizontal
+          ?[closestAlong,axisValue]
+          :[axisValue,closestAlong];
+        const snapped=[
+          clamp(snappedCenter[0]-(w/2),0,Math.max(0,cw-w)),
+          clamp(snappedCenter[1]-(h/2),0,Math.max(0,ch-h)),
+          w,
+          h
+        ];
+        const score=distance+distanceAlong;
+        if(!best||score<best.score)best={score,box:snapped};
+      }
+    }
+
+    // When no connected route is the closer alignment target, snap the dragged
+    // component center to nearby fixed component centers on either axis. This
+    // changes only the live box position; dimensions and route data stay intact.
+    let alignedBox=best?best.box:box;
+    let alignedScore=best?best.score:Infinity;
+    for(const candidate of Object.values(components)){
+      if(!candidate||candidate.hidden||String(candidate.instance_id||"")===String(activeDrag?.id||""))continue;
+      if(candidate.__oht_attached_sensor)continue;
+      const [cx,cy,cwBox,chBox]=cloneBox(candidate.box);
+      const candidateCenter=[cx+(cwBox/2),cy+(chBox/2)];
+      const xDistance=Math.abs(center[0]-candidateCenter[0]);
+      const yDistance=Math.abs(center[1]-candidateCenter[1]);
+      const snapX=xDistance<=threshold;
+      const snapY=yDistance<=threshold;
+      if(!snapX&&!snapY)continue;
+
+      const snappedCenter=[
+        snapX?candidateCenter[0]:center[0],
+        snapY?candidateCenter[1]:center[1]
+      ];
+      const score=(snapX?xDistance:0)+(snapY?yDistance:0);
+      if(score>=alignedScore)continue;
+      alignedScore=score;
+      alignedBox=[
+        clamp(snappedCenter[0]-(w/2),0,Math.max(0,cw-w)),
+        clamp(snappedCenter[1]-(h/2),0,Math.max(0,ch-h)),
+        w,
+        h
+      ];
+    }
+    return alignedBox;
+  }
+
   // TypeScript routing integration only. The existing editor remains plain JS;
   // routing.ts is compiled to routing.js and exposes window.RTSRouting. If the
   // helper is unavailable for any reason, the exact previous midpoint route is
@@ -368,6 +452,85 @@
       if(r&&!r.hidden&&(String(r.source||"")===componentId||String(r.target||"")===componentId))out.push(r);
     }
     return out;
+  }
+
+  // OHT Tank visual attachment only. The LLS reached through the existing
+  // OHT Tank -> Transmitter -> LLS relationship is displayed on the tank body.
+  // No project topology or server-side component state is changed here.
+  function ohtAttachedSensorBox(parentBox){
+    const [x,y,w,h]=cloneBox(parentBox);
+    return [x+(w*0.38),y+(h*0.16),w*0.42,h*0.42];
+  }
+
+  function reanchorComponentRoutes(instanceId,fromBox,toBox){
+    const componentId=String(instanceId||"");
+    if(!componentId)return;
+    for(const route of connectedRoutes(componentId)){
+      if(!Array.isArray(route.points)||route.points.length<2)continue;
+      const isSource=String(route.source||"")===componentId;
+      const endpoint=isSource?route.points[0]:route.points[route.points.length-1];
+      const portRef=draftPortReference(fromBox,endpoint);
+      const portPoint=draftResolvePortReference(toBox,portRef);
+      if(portPoint)route.points=draftAttachEndpoint(route.points,isSource,portPoint);
+    }
+  }
+
+  function prepareOhtTankSensorAttachments(){
+    const componentName=id=>String(components[String(id||"")]?.component||"");
+    const allRoutes=Object.values(routes).filter(Boolean);
+
+    Object.values(components).forEach(component=>{
+      if(!component)return;
+      delete component.__oht_attached_sensor;
+      delete component.__oht_parent_id;
+    });
+
+    const ohtToTransmitters=allRoutes.filter(route=>
+      componentName(route.source)==="OHT Tank" &&
+      componentName(route.target)==="Transmitter"
+    );
+    const transmitterToSensors=allRoutes.filter(route=>
+      componentName(route.source)==="Transmitter" &&
+      componentName(route.target)==="Linear Level Sensor (LLS)"
+    );
+
+    const usedSensorIds=new Set();
+    for(const tankRoute of ohtToTransmitters){
+      const tankId=String(tankRoute.source||"");
+      const transmitterId=String(tankRoute.target||"");
+      const sensorRoute=transmitterToSensors.find(route=>
+        String(route.source||"")===transmitterId &&
+        !usedSensorIds.has(String(route.target||""))
+      );
+      if(!sensorRoute)continue;
+
+      const sensorId=String(sensorRoute.target||"");
+      const tank=components[tankId];
+      const transmitter=components[transmitterId];
+      const sensor=components[sensorId];
+      if(!tank||!sensor)continue;
+
+      usedSensorIds.add(sensorId);
+      sensor.__oht_attached_sensor=true;
+      sensor.__oht_parent_id=tankId;
+
+      // When either existing OHT sensor link is deleted, hide only this attached
+      // visual sensor. The saved component/project data remains untouched.
+      const attachmentActive=
+        !tank.hidden &&
+        !transmitter?.hidden &&
+        !tankRoute.hidden &&
+        !sensorRoute.hidden;
+      if(!attachmentActive){
+        sensor.hidden=true;
+        continue;
+      }
+
+      const previousBox=cloneBox(sensor.box);
+      const attachedBox=ohtAttachedSensorBox(tank.box);
+      sensor.box=attachedBox;
+      reanchorComponentRoutes(sensorId,previousBox,attachedBox);
+    }
   }
   function collectRoutePayload(ids){const set=new Set(ids||[]),out=[];Object.values(routes).forEach(r=>{if(set.has(r.source)||set.has(r.target))out.push({edge_id:r.edge_id,points:clonePoints(r.points),source:r.source,target:r.target,hidden:!!r.hidden});});return out;}
   function selectEdge(id){if(!routes[id]||routes[id].hidden)return;selectedEdge=id;selectedComponents.clear();closeContext();renderOverlay();root.focus({preventScroll:true});}
@@ -563,16 +726,34 @@
   function zoomBy(factor){const [w,h]=canvasSize(),oldW=w/zoom,oldH=h/zoom,cx=panX+oldW/2,cy=panY+oldH/2;zoom=clamp(zoom*factor,.35,4);const nw=w/zoom,nh=h/zoom;panX=cx-nw/2;panY=cy-nh/2;updateView();}
   function align(kind){const ids=[...selectedComponents].filter(id=>components[id]&&!components[id].hidden);if(ids.length<2)return;const boxes=ids.map(id=>components[id].box);if(kind==="h"){const cy=boxes.reduce((s,b)=>s+b[1]+b[3]/2,0)/boxes.length;ids.forEach(id=>{const b=components[id].box,dy=cy-(b[1]+b[3]/2);b[1]+=dy;connectedRoutes(id).forEach(r=>{if(r.source===id){r.points[0][1]+=dy;if(r.points.length>2)r.points[1][1]+=dy;}if(r.target===id){const n=r.points.length;r.points[n-1][1]+=dy;if(n>2)r.points[n-2][1]+=dy;}});});}else{const cx=boxes.reduce((s,b)=>s+b[0]+b[2]/2,0)/boxes.length;ids.forEach(id=>{const b=components[id].box,dx=cx-(b[0]+b[2]/2);b[0]+=dx;connectedRoutes(id).forEach(r=>{if(r.source===id){r.points[0][0]+=dx;if(r.points.length>2)r.points[1][0]+=dx;}if(r.target===id){const n=r.points.length;r.points[n-1][0]+=dx;if(n>2)r.points[n-2][0]+=dx;}});});}checkpoint();renderOverlay();}
   function emitComponentBatch(ids){checkpoint();}
-  function openContext(x,y,type,id){closeContext();const menu=document.createElement("div");menu.className="context";menu.style.left=`${Math.min(x,window.innerWidth-170)}px`;menu.style.top=`${Math.min(y,window.innerHeight-180)}px`;const add=(label,fn,danger=false)=>{const b=document.createElement("button");b.type="button";b.textContent=label;if(danger)b.className="danger";b.addEventListener("click",()=>{fn();closeContext();});menu.appendChild(b);};if(type==="edge"){add("Reverse direction",()=>{const r=routes[id];r.direction=r.direction==="target_to_source"?"source_to_target":"target_to_source";checkpoint();renderOverlay();});add("Reset route",()=>{const r=routes[id];r.points=clonePoints(r.original_points||r.points);r.direction=r.original_direction||"source_to_target";r.hidden=false;checkpoint();renderOverlay();});add("Delete connection",()=>{routes[id].hidden=true;selectedEdge=null;checkpoint();renderOverlay();},true);}else{add("Duplicate",()=>duplicateIds([...selectedComponents]));add("Copy",()=>{clipboard=[...selectedComponents];});add("Delete",()=>deleteSelection(),true);}document.body.appendChild(menu);contextMenu=menu;}
+  function openContext(x,y,type,id){closeContext();const menu=document.createElement("div");menu.className="context";menu.style.left=`${Math.min(x,window.innerWidth-170)}px`;menu.style.top=`${Math.min(y,window.innerHeight-180)}px`;const add=(label,fn,danger=false)=>{const b=document.createElement("button");b.type="button";b.textContent=label;if(danger)b.className="danger";b.addEventListener("click",()=>{fn();closeContext();});menu.appendChild(b);};if(type==="edge"){add("Reverse direction",()=>{const r=routes[id];r.direction=r.direction==="target_to_source"?"source_to_target":"target_to_source";checkpoint();renderOverlay();});add("Reset route",()=>{const r=routes[id];r.points=clonePoints(r.original_points||r.points);r.direction=r.original_direction||"source_to_target";r.hidden=false;checkpoint();renderOverlay();});add("Delete connection",()=>{const r=routes[id];if(!r)return;if(argsState.drag_only){r.hidden=true;selectedEdge=null;emit("connection_delete",{edge_id:id});}else{r.hidden=true;selectedEdge=null;checkpoint();renderOverlay();}},true);}else{add("Duplicate",()=>duplicateIds([...selectedComponents]));add("Copy",()=>{clipboard=[...selectedComponents];});add("Delete",()=>deleteSelection(),true);}document.body.appendChild(menu);contextMenu=menu;}
+  function openContext(x,y,type,id){closeContext();const menu=document.createElement("div");menu.className="context";menu.style.left=`${Math.min(x,window.innerWidth-170)}px`;menu.style.top=`${Math.min(y,window.innerHeight-180)}px`;const add=(label,fn,danger=false)=>{const b=document.createElement("button");b.type="button";b.textContent=label;if(danger)b.className="danger";b.addEventListener("click",()=>{fn();closeContext();});menu.appendChild(b);};if(type==="edge"){add("Reverse direction",()=>{const r=routes[id];r.direction=r.direction==="target_to_source"?"source_to_target":"target_to_source";checkpoint();renderOverlay();});add("Reset route",()=>{const r=routes[id];r.points=clonePoints(r.original_points||r.points);r.direction=r.original_direction||"source_to_target";r.hidden=false;checkpoint();renderOverlay();});add("Delete connection",()=>{const r=routes[id];if(!r)return;if(argsState.drag_only){if(dragOnlyRouteAction)dragOnlyRouteAction.remove(id);else r.hidden=true;emit("connection_delete",{edge_id:id});}else{r.hidden=true;selectedEdge=null;checkpoint();renderOverlay();}},true);}else{add("Duplicate",()=>duplicateIds([...selectedComponents]));add("Copy",()=>{clipboard=[...selectedComponents];});add("Delete",()=>deleteSelection(),true);}document.body.appendChild(menu);contextMenu=menu;}
   function closeContext(){if(contextMenu){contextMenu.remove();contextMenu=null;}}
   function deleteSelection(){
+    if(argsState.drag_only&&dragOnlyRouteAction&&dragOnlyRouteAction.selected){
+      const edgeId=dragOnlyRouteAction.selected;
+      dragOnlyRouteAction.remove(edgeId);
+      emit("connection_delete",{edge_id:edgeId});
+      return;
+    }
     // Delete a selected connection by itself, exactly as before.
     if(selectedEdge){
       const edge=routes[selectedEdge];
-      if(edge)edge.hidden=true;
+      if(edge){
+        if(argsState.drag_only&&dragOnlyRouteAction){
+          dragOnlyRouteAction.remove(selectedEdge);
+        }else{
+          edge.hidden=true;
+        }
+        if(argsState.drag_only){
+          emit("connection_delete",{edge_id:selectedEdge});
+        }
+      }
       selectedEdge=null;
-      checkpoint();
-      renderOverlay();
+      if(!argsState.drag_only){
+        checkpoint();
+        renderOverlay();
+      }
       return;
     }
 
@@ -2022,6 +2203,60 @@
     const drawDragOnlyRoutes=()=>{
       routeSvg.innerHTML="";
       routeVisuals.clear();
+      const deleteRouteButton=document.createElement("button");
+      deleteRouteButton.type="button";
+      deleteRouteButton.textContent="Delete connection";
+      deleteRouteButton.title="Delete selected connection";
+      deleteRouteButton.style.cssText="display:none;position:absolute;right:12px;top:12px;z-index:100;padding:7px 11px;border:1px solid #b91c1c;border-radius:4px;background:#dc2626;color:#fff;font:600 13px Arial,sans-serif;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);";
+      deleteRouteButton.addEventListener("pointerdown",event=>{
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      deleteRouteButton.addEventListener("click",event=>{
+        event.preventDefault();
+        event.stopPropagation();
+        const edgeId=dragOnlyRouteAction?.selected;
+        if(!edgeId)return;
+        dragOnlyRouteAction.remove(edgeId);
+        emit("connection_delete",{edge_id:edgeId});
+      });
+      stage.appendChild(deleteRouteButton);
+      dragOnlyRouteAction={
+        selected:null,
+        select(edgeId){
+          this.selected=String(edgeId||"");
+          deleteRouteButton.style.display=this.selected?"block":"none";
+          for(const [id,visual] of routeVisuals){
+            const active=id===this.selected;
+            visual.line.setAttribute("stroke",active?"#0a66e3":(routes[id]?.dotted?"#000000":"#123DBD"));
+            visual.line.setAttribute("stroke-width",active?"0.026":"0.015");
+            visual.under.setAttribute("stroke",active?"#b9d7ff":"#ffffff");
+          }
+        },
+        remove(edgeId){
+          const id=String(edgeId||"");
+          const route=routes[id];
+          if(!route)return;
+          route.hidden=true;
+          if(this.selected===id){
+            this.selected=null;
+            deleteRouteButton.style.display="none";
+          }
+          const visual=routeVisuals.get(id);
+          if(visual){
+            visual.under.remove();
+            visual.line.remove();
+            visual.hit.remove();
+            visual.arrowVisual?.remove();
+            visual.arrowHandle?.remove();
+            visual.sourceTerminalHandle?.remove();
+            visual.targetTerminalHandle?.remove();
+            visual.sourceEndpointHandle?.remove();
+          }
+          routeVisuals.delete(id);
+          rebuildRouteConnectionIndex();
+        }
+      };
 
       // Direction arrows keep the existing orange appearance.
       const defs=routeEl("defs",{});
@@ -2600,16 +2835,24 @@
         hit.addEventListener("contextmenu",e=>{
           e.preventDefault();
           e.stopPropagation();
-          if(!route.hidden && window.confirm("Delete this connection line?")){
-            route.hidden=true;
-            emit("connection_delete",{edge_id:edgeId});
+          if(!route.hidden){
+            if(dragOnlyRouteAction)dragOnlyRouteAction.select(edgeId);
+            openContext(e.clientX,e.clientY,"edge",edgeId);
           }
+        });
+
+        hit.addEventListener("click",e=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(dragOnlyRouteAction)dragOnlyRouteAction.select(edgeId);
         });
 
         hit.addEventListener("pointerdown",e=>{
           if(e.button!==0&&e.pointerType!=="touch"&&e.pointerType!=="pen")return;
           e.preventDefault();
           e.stopPropagation();
+
+          if(dragOnlyRouteAction)dragOnlyRouteAction.select(edgeId);
 
           const p=rawRouteCanvasPoint(e);
 
@@ -2751,6 +2994,52 @@
     const hoverTimers=new Map();
     const overlays=new Map();
     const componentLabels=new Map();
+    const componentVisuals=new Map();
+    let activeLabelEditor=null;
+
+    const finishLabelEdit=(save=true)=>{
+      if(!activeLabelEditor)return;
+      const editor=activeLabelEditor;
+      activeLabelEditor=null;
+      const next=String(editor.input.value||"").trim();
+      editor.input.remove();
+      editor.labelPair.main.style.display="";
+      editor.labelPair.under.style.display="";
+      if(!save||!next||next===editor.original)return;
+      editor.component.title=next;
+      editor.labelPair.main.textContent=next;
+      editor.labelPair.under.textContent=next;
+      emit("component_label_edit",{instance_id:editor.id,title:next});
+    };
+
+    const beginLabelEdit=(id,labelPair,event)=>{
+      if(activeLabelEditor)finishLabelEdit(true);
+      const component=components[id];
+      if(!component||!labelPair)return;
+      const input=document.createElement("input");
+      input.type="text";
+      input.value=String(component.title||component.component||id);
+      input.setAttribute("aria-label","Component label");
+      input.style.cssText="position:absolute;z-index:90;box-sizing:border-box;min-width:80px;padding:2px 5px;border:1px solid #0a66e3;border-radius:3px;background:#fff;color:#173f75;font:700 16px Arial,sans-serif;text-align:center;transform:translateX(-50%);outline:none;";
+      const [x,y,w,h]=cloneBox(component.box);
+      input.style.left=toPercent(x+(w/2),cw);
+      input.style.top=toPercent(y+h+0.12,ch);
+      input.style.width=`${Math.max(80,Math.min(280,(String(input.value).length+4)*9))}px`;
+      stage.appendChild(input);
+      labelPair.main.style.display="none";
+      labelPair.under.style.display="none";
+      activeLabelEditor={id,component,labelPair,input,original:input.value};
+      input.addEventListener("pointerdown",e=>e.stopPropagation());
+      input.addEventListener("keydown",e=>{
+        if(e.key==="Enter"){e.preventDefault();finishLabelEdit(true);}
+        if(e.key==="Escape"){e.preventDefault();finishLabelEdit(false);}
+      });
+      input.addEventListener("blur",()=>finishLabelEdit(true));
+      input.focus({preventScroll:true});
+      input.select();
+      event?.stopPropagation();
+      event?.preventDefault();
+    };
 
     // Touch reveal persistence survives a Streamlit component re-render caused
     // by the existing component-select event, so a finger tap still keeps the
@@ -2949,11 +3238,17 @@
       visual.draggable=false;
       visual.alt=String(c.title||c.component||id);
       visual.src=`data:image/png;base64,${String(c.image_b64||"").trim()}`;
-      visual.style.cssText=`position:absolute;z-index:15;pointer-events:none;user-select:none;object-fit:${String(c.image_fit||"contain")};`;
+      visual.style.cssText=`position:absolute;z-index:${c.__oht_attached_sensor?18:15};pointer-events:none;user-select:none;object-fit:${String(c.image_fit||"contain")};`;
       applyVisibleComponentImageBox(visual,c.box);
       stage.appendChild(visual);
+      componentVisuals.set(id,visual);
+
+      // The OHT-associated LLS is part of the tank presentation only: no
+      // standalone label, +/- controls, delete control or independent drag box.
+      if(c.__oht_attached_sensor)continue;
 
       let wifiBadge=null;
+      let suppressComponentClick=false;
       const positionWifiBadge=()=>{
         if(!wifiBadge)return;
         const [wx,wy,ww,wh]=cloneBox(c.box);
@@ -3023,7 +3318,7 @@
         stroke:"#ffffff",
         "stroke-width":"0.055",
         "stroke-linejoin":"round",
-        style:"pointer-events:none;user-select:none;"
+        style:"pointer-events:auto;user-select:none;cursor:text;"
       });
       labelUnder.textContent=labelText;
       routeSvg.appendChild(labelUnder);
@@ -3037,12 +3332,14 @@
         "font-family":"Arial, Segoe UI, sans-serif",
         "font-weight":"700",
         fill:"#173f75",
-        style:"pointer-events:none;user-select:none;"
+        style:"pointer-events:auto;user-select:none;cursor:text;"
       });
       labelMain.textContent=labelText;
       routeSvg.appendChild(labelMain);
 
       componentLabels.set(id,{under:labelUnder,main:labelMain});
+      labelMain.addEventListener("click",event=>beginLabelEdit(id,{under:labelUnder,main:labelMain},event));
+      labelUnder.addEventListener("click",event=>beginLabelEdit(id,{under:labelUnder,main:labelMain},event));
 
       const hit=document.createElement("div");
       hit.dataset.componentId=id;
@@ -3102,6 +3399,43 @@
 
         const start=canvasPoint(e);
         const attachedRoutes=connectedRoutes(id);
+        const attachedComponents=Object.values(components)
+          .filter(child=>
+            child &&
+            !child.hidden &&
+            child.__oht_attached_sensor &&
+            String(child.__oht_parent_id||"")===id
+          )
+          .map(child=>{
+            const childId=String(child.instance_id||"");
+            const childRoutes=connectedRoutes(childId);
+            return {
+              id:childId,
+              component:child,
+              base:cloneBox(child.box),
+              routes:childRoutes,
+              routeBase:Object.fromEntries(
+                childRoutes.map(route=>[
+                  String(route.edge_id||""),
+                  clonePoints(route.points)
+                ])
+              ),
+              routePortRefs:Object.fromEntries(
+                childRoutes.map(route=>{
+                  const edgeId=String(route.edge_id||"");
+                  const pts=Array.isArray(route.points)?route.points:[];
+                  return [edgeId,{
+                    source:String(route.source||"")===childId&&pts.length
+                      ?inferPortReference(child.box,pts[0])
+                      :null,
+                    target:String(route.target||"")===childId&&pts.length
+                      ?inferPortReference(child.box,pts[pts.length-1])
+                      :null
+                  }];
+                })
+              )
+            };
+          });
         activeDrag={
           id,
           component:c,
@@ -3109,6 +3443,7 @@
           start,
           base:cloneBox(c.box),
           attachedRoutes,
+          attachedComponents,
 
           // Keep the exact current route geometry as the immutable drag baseline.
           // Connected line endpoints are translated from this baseline while the
@@ -3157,8 +3492,15 @@
         const [bx,by,bw,bh]=activeDrag.base;
         const dx=p[0]-activeDrag.start[0];
         const dy=p[1]-activeDrag.start[1];
-        const nx=clamp(bx+dx,0,Math.max(0,cw-bw));
-        const ny=clamp(by+dy,0,Math.max(0,ch-bh));
+        const proposedBox=[
+          clamp(bx+dx,0,Math.max(0,cw-bw)),
+          clamp(by+dy,0,Math.max(0,ch-bh)),
+          bw,
+          bh
+        ];
+        const snappedBox=snapBoxToConnectedRoute(activeDrag,proposedBox,stage,cw,ch);
+        const nx=snappedBox[0];
+        const ny=snappedBox[1];
 
         c.box=[nx,ny,bw,bh];
         applyBox(hit,c.box);
@@ -3176,6 +3518,46 @@
         }
 
         applyVisibleComponentImageBox(activeDrag.ghost,c.box);
+
+        // OHT-only attachment: move its sensor by the same drag delta. Only the
+        // sensor's already-connected terminal route endpoint follows it.
+        for(const childState of (activeDrag.attachedComponents||[])){
+          const child=childState.component;
+          const [cbx,cby,cbw,cbh]=childState.base;
+          child.box=[cbx+(nx-bx),cby+(ny-by),cbw,cbh];
+
+          const childVisual=componentVisuals.get(childState.id);
+          if(childVisual)applyVisibleComponentImageBox(childVisual,child.box);
+
+          for(const route of (childState.routes||[])){
+            const edgeId=String(route.edge_id||"");
+            const basePoints=childState.routeBase?.[edgeId];
+            if(!Array.isArray(basePoints)||basePoints.length<2)continue;
+
+            route.points=clonePoints(basePoints);
+            const portRefs=childState.routePortRefs?.[edgeId]||{};
+            if(String(route.source||"")===childState.id){
+              const sourcePort=resolvePortReference(child.box,portRefs.source);
+              if(sourcePort){
+                route.points=moveConnectedRouteEndpointToPort(
+                  route.points,true,sourcePort
+                );
+              }
+            }
+            if(String(route.target||"")===childState.id){
+              const targetPort=resolvePortReference(child.box,portRefs.target);
+              if(targetPort){
+                route.points=moveConnectedRouteEndpointToPort(
+                  route.points,false,targetPort
+                );
+              }
+            }
+
+            route.points=cleanDraggedRoutePoints(route.points);
+            refreshArrowAngleFromCurrentGeometry(route);
+            updateRouteVisual(edgeId);
+          }
+        }
 
         // Move ONLY the line geometry attached to this component.
         // Always rebuild from the drag-start baseline so repeated pointermove
@@ -3217,11 +3599,36 @@
         activeDrag.moved=activeDrag.moved||Math.hypot(nx-bx,ny-by)>.02;
       };
 
-      hit.addEventListener("pointermove",moveActiveDrag);
-      stage.addEventListener("pointermove",moveActiveDrag);
+      let dragFrame=0;
+      let pendingDragEvent=null;
+      const scheduleActiveDragMove=e=>{
+        if(!activeDrag||activeDrag.id!==id||activeDrag.pointerId!==e.pointerId)return;
+        e.preventDefault();
+        e.stopPropagation();
+        pendingDragEvent=e;
+        if(dragFrame)return;
+        dragFrame=requestAnimationFrame(()=>{
+          dragFrame=0;
+          const next=pendingDragEvent;
+          pendingDragEvent=null;
+          if(next)moveActiveDrag(next);
+        });
+      };
+      const flushActiveDragMove=()=>{
+        if(!dragFrame)return;
+        cancelAnimationFrame(dragFrame);
+        dragFrame=0;
+        const next=pendingDragEvent;
+        pendingDragEvent=null;
+        if(next)moveActiveDrag(next);
+      };
+
+      hit.addEventListener("pointermove",scheduleActiveDragMove);
+      stage.addEventListener("pointermove",scheduleActiveDragMove);
 
       const finish=e=>{
         if(!activeDrag||activeDrag.id!==id||activeDrag.pointerId!==e.pointerId)return;
+        flushActiveDragMove();
         e.preventDefault();
         e.stopPropagation();
 
@@ -3237,24 +3644,47 @@
           // Do not notify Streamlit for movement. The component stays exactly at
           // its dropped position and the current page does not rerun/reload.
           saveMovementDraft();
+          suppressComponentClick=true;
         }else{
-          emit("component_select",{
-            instance_id:id,
-            component:String(c.component||"")
-          });
+          // Selection is emitted by the normal click event below.
         }
       };
 
       hit.addEventListener("pointerup",finish);
       stage.addEventListener("pointerup",finish);
+      hit.addEventListener("click",e=>{
+        if(suppressComponentClick){suppressComponentClick=false;return;}
+        e.preventDefault();
+        e.stopPropagation();
+        emit("component_select",{
+          instance_id:id,
+          component:String(c.component||"")
+        });
+      });
       hit.addEventListener("pointercancel",e=>{
         if(!activeDrag||activeDrag.id!==id||activeDrag.pointerId!==e.pointerId)return;
+        if(dragFrame)cancelAnimationFrame(dragFrame);
+        dragFrame=0;
+        pendingDragEvent=null;
         const d=activeDrag;
         activeDrag=null;
         c.box=cloneBox(d.base);
         applyBox(hit,c.box);
         applyVisibleComponentImageBox(visual,c.box);
         positionWifiBadge();
+
+        for(const childState of (d.attachedComponents||[])){
+          childState.component.box=cloneBox(childState.base);
+          const childVisual=componentVisuals.get(childState.id);
+          if(childVisual){
+            applyVisibleComponentImageBox(childVisual,childState.component.box);
+          }
+          for(const [edgeId,points] of Object.entries(childState.routeBase||{})){
+            if(!routes[edgeId])continue;
+            routes[edgeId].points=clonePoints(points);
+            updateRouteVisual(edgeId);
+          }
+        }
 
         // A cancelled component drag must also restore the exact connected-line
         // geometry that existed when the drag started.
@@ -3287,7 +3717,9 @@
 
     const componentIdAtPointer=(ev)=>{
       const p=canvasPoint(ev);
-      const list=Object.values(components).filter(c=>c&&!c.hidden).reverse();
+      const list=Object.values(components).filter(
+        c=>c&&!c.hidden&&!c.__oht_attached_sensor
+      ).reverse();
       for(const c of list){
         const id=String(c.instance_id||"");
         const b=cloneBox(c.box);
@@ -3517,7 +3949,10 @@
     rr.forEach(r=>{const id=String(r.edge_id||"");if(id)routes[id]={...r,edge_id:id,points:clonePoints(r.points),original_points:clonePoints(r.original_points||r.points),hidden:!!r.hidden};});
     cc.forEach(c=>{const id=String(c.instance_id||"");if(id)components[id]={...c,instance_id:id,box:cloneBox(c.box),hidden:!!c.hidden};});
     rebuildRouteConnectionIndex();
-    if(argsState.drag_only)restoreMovementDraft();
+    if(argsState.drag_only){
+      restoreMovementDraft();
+      prepareOhtTankSensorAttachments();
+    }
     if(argsState.edit_mode){initialSnapshot=snapshot();history=[JSON.parse(JSON.stringify(initialSnapshot))];historyIndex=0;dirty=false;renderEditor();}
     else if(argsState.drag_only){renderDragOnly();}
     else renderNormal();
